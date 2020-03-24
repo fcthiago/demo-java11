@@ -1,0 +1,60 @@
+server:
+  port: ${port:8080}
+
+spring:
+  main:
+    lazy-initialization: ${lazy_initialization:false}
+    banner-mode: "off"
+  application:
+    name: ${name:demo}
+  profiles:
+    active: ${profiles_active:local}
+  data:
+    mongodb:
+      uri: ${database_mongodb_uri:mongodb://root:password@localhost:27017/demo?authSource=admin&maxIdleTimeMS=15000}
+  cloud:
+    stream:
+      bindings:
+        publishCreatedUser:
+          destination: x-created-user
+        publishDeletedUser:
+          destination: x-deleted-user
+
+      rabbit:
+        bindings:
+          publishCreatedUser:
+            producer:
+              exchangeType: fanout
+          publishDeletedUser:
+            producer:
+              exchangeType: fanout
+
+      binders:
+        rabbitmq:
+          type: rabbit
+          environment:
+            spring:
+              rabbitmq:
+                host: ${rabbit_host:localhost}
+                port: ${rabbit_port:5672}
+                username: ${rabbit_username:guest}
+                password: ${rabbit_password:guest}
+                virtual-host: /
+
+  rabbitmq:
+    addresses: ${rabbit_addresses:localhost:5672}
+    username: ${rabbit_username:guest}
+    password: ${rabbit_password:guest}
+    virtual-host: ${rabbit_virtualhost:/}
+
+management:
+  endpoint:
+    health:
+      show-details: "ALWAYS"
+
+info:
+  build:
+    groupId: '@project.groupId@'
+    artifactId: '@project.artifactId@'
+    version: '@project.version@'
+    date: '@timestamp@'
