@@ -34,7 +34,12 @@ public class HttpUserDeletionTest extends AbstractUserTest {
   @DisplayName("I want to delete a user with success")
   public void deleteUserSuccessfully() throws IOException {
     ResponseEntity<?> response =
-        request.exchange("/users/{id}", HttpMethod.DELETE, HttpEntity.EMPTY, Object.class, "620dac34-15e1-4375-8be8-e9a46d1f5a36");
+            request.exchange(
+                    "/users/{id}",
+                    HttpMethod.DELETE,
+                    HttpEntity.EMPTY,
+                    Object.class,
+                    "620dac34-15e1-4375-8be8-e9a46d1f5a36");
 
     // RESPONSE VALIDATION
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
@@ -46,15 +51,15 @@ public class HttpUserDeletionTest extends AbstractUserTest {
     assertThat(user.isEmpty()).isTrue();
 
     // NOTIFICATION VALIDATION
-    Message<?> poll = collector.forChannel(output.publishCreatedUser()).poll();
+    Message<?> poll = collector.forChannel(output.publishDeletedUser()).poll();
     Object payload = poll.getPayload();
     MessageHeaders headers = poll.getHeaders();
 
     UserResponseDto userResponse = mapper.readValue(payload.toString(), UserResponseDto.class);
 
     assertThat(isUUID(userResponse.getId())).isTrue();
-    assertThat(userResponse.getEmail()).isEqualTo("thiago.costa@sensedia.com");
-    assertThat(userResponse.getName()).isEqualTo("Thiago Costa");
+    assertThat(userResponse.getEmail()).isEqualTo("usuario03@sensedia.com");
+    assertThat(userResponse.getName()).isEqualTo("Usuário 03");
     assertThat(userResponse.getStatus()).isEqualTo(UserStatus.ACTIVE.toString());
     assertThat(userResponse.getCreationDate()).isNotNull();
 
@@ -63,11 +68,11 @@ public class HttpUserDeletionTest extends AbstractUserTest {
 
   @Test
   @DisplayName("I want to delete a user that does not exist")
-  public void deleteUserThatDoesNotExist() throws IOException {
+  public void deleteUserThatDoesNotExist() {
     ResponseEntity<DefaultErrorResponse> response =
         request.exchange(
-            "/users/{}",
-            HttpMethod.POST,
+                "/users/{id}",
+                HttpMethod.DELETE,
             HttpEntity.EMPTY,
             DefaultErrorResponse.class,
             "not-found");
@@ -76,7 +81,7 @@ public class HttpUserDeletionTest extends AbstractUserTest {
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     assertThat(response.getBody().getStatus()).isEqualTo(HttpStatus.NOT_FOUND.value());
     assertThat(response.getBody().getTitle()).isEqualTo(HttpStatus.NOT_FOUND.getReasonPhrase());
-    assertThat(response.getBody().getDetail()).isEqualTo("usuário não encontrado.");
+    assertThat(response.getBody().getDetail()).isEqualTo("User not found");
     assertThat(response.getBody().getType()).isNull();
 
     // DATABASE VALIDATION

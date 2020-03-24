@@ -30,7 +30,7 @@ public class AmqpUserAdapterOutbound implements AmqpPort {
 
   @Override
   public void notifyUserDeletion(User user) {
-    sendMessage(output.publishDeletedUser(), user, "DeletedUser");
+    sendMessage(output.publishDeletedUser(), user, "UserDeletion");
   }
 
   private void sendMessage(MessageChannel channel, User user, String eventName) {
