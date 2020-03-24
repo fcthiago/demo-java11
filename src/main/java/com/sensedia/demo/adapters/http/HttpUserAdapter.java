@@ -2,9 +2,9 @@ package com.sensedia.demo.adapters.http;
 
 import com.sensedia.demo.adapters.dtos.UserCreationDto;
 import com.sensedia.demo.adapters.dtos.UserResponseDto;
-import com.sensedia.demo.ports.ApplicationPort;
-import com.sensedia.demo.domains.User;
 import com.sensedia.demo.adapters.mappers.UserMapper;
+import com.sensedia.demo.domains.User;
+import com.sensedia.demo.ports.ApplicationPort;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +20,7 @@ public class HttpUserAdapter {
   private final UserMapper userMapper;
 
   public HttpUserAdapter(
-          @Autowired ApplicationPort userApplication, @Autowired UserMapper userMapper) {
+      @Autowired ApplicationPort userApplication, @Autowired UserMapper userMapper) {
     this.userApplication = userApplication;
     this.userMapper = userMapper;
   }
@@ -40,9 +40,13 @@ public class HttpUserAdapter {
     userApplication.delete(id);
   }
 
-  @GetMapping("/{userId}")
-  public ResponseEntity<UserResponseDto> get(String userId) {
-    return null;
+  @GetMapping("/{id}")
+  public ResponseEntity<UserResponseDto> get(@PathVariable String id) {
+    User user = userApplication.findById(id);
+
+    UserResponseDto userResponse = userMapper.toUserResponseDto(user);
+
+    return ResponseEntity.ok(userResponse);
   }
 
   @GetMapping

@@ -42,11 +42,17 @@ public class UserApplication implements ApplicationPort {
 
   @Override
   public void delete(String id) {
-    User user = repository.findById(id).orElseGet(() -> {
-      throw new NotFoundException("User not found");
-    });
+    User user = findById(id);
 
     repository.delete(user);
     amqpPort.notifyUserDeletion(user);
   }
+
+  @Override
+  public User findById(String id) {
+    return repository.findById(id).orElseGet(() -> {
+      throw new NotFoundException("User not found");
+    });
+  }
+
 }

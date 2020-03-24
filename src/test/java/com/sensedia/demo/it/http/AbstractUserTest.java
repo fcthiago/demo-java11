@@ -13,13 +13,16 @@ import org.springframework.cloud.stream.test.binder.MessageCollector;
 import org.springframework.core.io.Resource;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 public abstract class AbstractUserTest {
 
-  @Autowired
-  RepositoryPort repository;
+  static final String USER_ID_VALID = "620dac34-15e1-4375-8be8-e9a46d1f5a36";
+
+  static final String USER_ID_NOT_FOUND = "not-found";
+
+  @Autowired RepositoryPort repository;
 
   @Autowired ObjectMapper mapper;
 
@@ -39,7 +42,7 @@ public abstract class AbstractUserTest {
   }
 
   String loadData(Resource resource) throws IOException {
-    return IOUtils.toString(resource.getInputStream(), Charset.forName("UTF-8"));
+    return IOUtils.toString(resource.getInputStream(), StandardCharsets.UTF_8);
   }
 
   boolean isUUID(String uuid) {
