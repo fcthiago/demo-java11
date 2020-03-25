@@ -1,6 +1,9 @@
 package com.sensedia.demo.ports;
 
 import com.sensedia.demo.domains.User;
+import com.sensedia.demo.domains.search.UserSearch;
+import com.sensedia.demo.domains.search.UserSearchResponse;
+
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
@@ -10,4 +13,6 @@ public interface ApplicationPort {
   void delete(@NotNull String id);
 
   User findById(@NotNull String id);
+
+  UserSearchResponse findAll(@Valid @NotNull UserSearch userSearch);
 }

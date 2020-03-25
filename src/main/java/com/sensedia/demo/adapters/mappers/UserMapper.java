@@ -5,9 +5,13 @@ import com.sensedia.demo.adapters.dtos.UserResponseDto;
 import com.sensedia.demo.domains.User;
 import org.mapstruct.Mapper;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring")
 public interface UserMapper {
   User toUser(UserCreationDto userCreationDto);
 
   UserResponseDto toUserResponseDto(User user);
+
+  List<UserResponseDto> toUserResponseDtos(List<User> users);
 }

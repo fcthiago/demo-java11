@@ -3,6 +3,8 @@ package com.sensedia.demo.applications;
 import com.sensedia.commons.exceptions.NotFoundException;
 import com.sensedia.demo.domains.User;
 import com.sensedia.demo.domains.UserStatus;
+import com.sensedia.demo.domains.search.UserSearch;
+import com.sensedia.demo.domains.search.UserSearchResponse;
 import com.sensedia.demo.ports.AmqpPort;
 import com.sensedia.demo.ports.ApplicationPort;
 import com.sensedia.demo.ports.RepositoryPort;
@@ -41,7 +43,7 @@ public class UserApplication implements ApplicationPort {
   }
 
   @Override
-  public void delete(String id) {
+  public void delete(@NotNull String id) {
     User user = findById(id);
 
     repository.delete(user);
@@ -49,10 +51,15 @@ public class UserApplication implements ApplicationPort {
   }
 
   @Override
-  public User findById(String id) {
+  public User findById(@NotNull String id) {
     return repository.findById(id).orElseGet(() -> {
       throw new NotFoundException("User not found");
     });
+  }
+
+  @Override
+  public UserSearchResponse findAll(@Valid @NotNull UserSearch userSearch) {
+    return repository.findAll(userSearch);
   }
 
 }

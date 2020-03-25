@@ -1,7 +1,6 @@
 package com.sensedia.demo.it.http;
 
 import com.sensedia.commons.exceptions.DefaultErrorResponse;
-import com.sensedia.commons.headers.DefaultHeader;
 import com.sensedia.demo.adapters.dtos.UserResponseDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 
 import java.io.IOException;
 
+import static com.sensedia.commons.headers.DefaultHeader.HEADER_ACCEPT_RANGE;
+import static com.sensedia.commons.headers.DefaultHeader.HEADER_CONTENT_RANGE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
@@ -28,7 +29,7 @@ public class HttpUserSearchTest extends AbstractUserTest {
 
   @Test
   @DisplayName("I want to search for a user with an empty result list")
-  public void searchUserWithEmptyResultList() throws IOException {
+  public void searchUserWithEmptyResultList() {
     ResponseEntity<UserResponseDto[]> response =
         request.exchange(
             "/users?page=1&limit=3&name=asdf",
@@ -40,16 +41,16 @@ public class HttpUserSearchTest extends AbstractUserTest {
 
     assertThat(response.getBody()).hasSize(0);
 
-    assertThat(response.getHeaders().get(DefaultHeader.HEADER_CONTENT_RANGE).get(0)).isEqualTo("0");
-    assertThat(response.getHeaders().get(DefaultHeader.HEADER_ACCEPT_RANGE).get(0)).isEqualTo("10");
+    assertThat(response.getHeaders().get(HEADER_CONTENT_RANGE).get(0)).isEqualTo("0");
+    assertThat(response.getHeaders().get(HEADER_ACCEPT_RANGE).get(0)).isEqualTo("100");
   }
 
   @Test
   @DisplayName("I want to search for a user by name")
-  public void searchUserByName() throws IOException {
+  public void searchUserByName() {
     ResponseEntity<UserResponseDto[]> response =
         request.exchange(
-            "/users?page=1&limit=3&name=usuario01",
+            "/users?page=1&limit=3&name=Usuário 01",
             HttpMethod.GET,
             HttpEntity.EMPTY,
             UserResponseDto[].class);
@@ -58,16 +59,18 @@ public class HttpUserSearchTest extends AbstractUserTest {
 
     assertThat(response.getBody()).hasSize(1);
 
-    assertThat(response.getHeaders().get(DefaultHeader.HEADER_CONTENT_RANGE).get(0)).isEqualTo("1");
-    assertThat(response.getHeaders().get(DefaultHeader.HEADER_ACCEPT_RANGE).get(0)).isEqualTo("10");
+    assertThat(response.getBody()[0].getName()).isEqualTo("Usuário 01");
+
+    assertThat(response.getHeaders().get(HEADER_CONTENT_RANGE).get(0)).isEqualTo("1");
+    assertThat(response.getHeaders().get(HEADER_ACCEPT_RANGE).get(0)).isEqualTo("100");
   }
 
   @Test
   @DisplayName("I want to search for a user by the first letters of the name")
-  public void searchUserByFirstLettersOfTheName() throws IOException {
+  public void searchUserByFirstLettersOfTheName() {
     ResponseEntity<UserResponseDto[]> response =
         request.exchange(
-            "/users?page=1&limit=3&name=usuar",
+            "/users?page=1&limit=3&name=Usuário",
             HttpMethod.GET,
             HttpEntity.EMPTY,
             UserResponseDto[].class);
@@ -76,13 +79,13 @@ public class HttpUserSearchTest extends AbstractUserTest {
 
     assertThat(response.getBody()).hasSize(3);
 
-    assertThat(response.getHeaders().get(DefaultHeader.HEADER_CONTENT_RANGE).get(0)).isEqualTo("5");
-    assertThat(response.getHeaders().get(DefaultHeader.HEADER_ACCEPT_RANGE).get(0)).isEqualTo("10");
+    assertThat(response.getHeaders().get(HEADER_CONTENT_RANGE).get(0)).isEqualTo("5");
+    assertThat(response.getHeaders().get(HEADER_ACCEPT_RANGE).get(0)).isEqualTo("100");
   }
 
   @Test
   @DisplayName("I want to search for a user by email")
-  public void searchUserByEmail() throws IOException {
+  public void searchUserByEmail() {
     ResponseEntity<UserResponseDto[]> response =
         request.exchange(
             "/users?page=1&limit=3&email=usuario01@sensedia.com",
@@ -94,13 +97,15 @@ public class HttpUserSearchTest extends AbstractUserTest {
 
     assertThat(response.getBody()).hasSize(1);
 
-    assertThat(response.getHeaders().get(DefaultHeader.HEADER_CONTENT_RANGE).get(0)).isEqualTo("1");
-    assertThat(response.getHeaders().get(DefaultHeader.HEADER_ACCEPT_RANGE).get(0)).isEqualTo("10");
+    assertThat(response.getBody()[0].getName()).isEqualTo("Usuário 01");
+
+    assertThat(response.getHeaders().get(HEADER_CONTENT_RANGE).get(0)).isEqualTo("1");
+    assertThat(response.getHeaders().get(HEADER_ACCEPT_RANGE).get(0)).isEqualTo("100");
   }
 
   @Test
   @DisplayName("I want to search for a user by the first letters of the email")
-  public void searchUserByFirstLettersOfTheEmail() throws IOException {
+  public void searchUserByFirstLettersOfTheEmail() {
     ResponseEntity<UserResponseDto[]> response =
         request.exchange(
             "/users?page=1&limit=3&email=usuario",
@@ -112,13 +117,13 @@ public class HttpUserSearchTest extends AbstractUserTest {
 
     assertThat(response.getBody()).hasSize(3);
 
-    assertThat(response.getHeaders().get(DefaultHeader.HEADER_CONTENT_RANGE).get(0)).isEqualTo("5");
-    assertThat(response.getHeaders().get(DefaultHeader.HEADER_ACCEPT_RANGE).get(0)).isEqualTo("10");
+    assertThat(response.getHeaders().get(HEADER_CONTENT_RANGE).get(0)).isEqualTo("5");
+    assertThat(response.getHeaders().get(HEADER_ACCEPT_RANGE).get(0)).isEqualTo("100");
   }
 
   @Test
   @DisplayName("I want to search for a user by status")
-  public void searchUserByStatus() throws IOException {
+  public void searchUserByStatus() {
     ResponseEntity<UserResponseDto[]> response =
         request.exchange(
             "/users?page=1&limit=3&status=ACTIVE",
@@ -130,13 +135,15 @@ public class HttpUserSearchTest extends AbstractUserTest {
 
     assertThat(response.getBody()).hasSize(3);
 
-    assertThat(response.getHeaders().get(DefaultHeader.HEADER_CONTENT_RANGE).get(0)).isEqualTo("4");
-    assertThat(response.getHeaders().get(DefaultHeader.HEADER_ACCEPT_RANGE).get(0)).isEqualTo("10");
+    assertThat(response.getBody()[0].getName()).isEqualTo("Usuário 01");
+
+    assertThat(response.getHeaders().get(HEADER_CONTENT_RANGE).get(0)).isEqualTo("4");
+    assertThat(response.getHeaders().get(HEADER_ACCEPT_RANGE).get(0)).isEqualTo("100");
   }
 
   @Test
   @DisplayName("I want to search for a user by status with invalid status name")
-  public void searchUserByStatusWithInvalidStatusName() throws IOException {
+  public void searchUserByStatusWithInvalidStatusName() {
     ResponseEntity<DefaultErrorResponse> response =
         request.exchange(
             "/users?page=1&limit=3&status=ERROR",
@@ -149,13 +156,14 @@ public class HttpUserSearchTest extends AbstractUserTest {
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     assertThat(response.getBody().getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     assertThat(response.getBody().getTitle()).isEqualTo(HttpStatus.BAD_REQUEST.getReasonPhrase());
-    assertThat(response.getBody().getDetail()).isEqualTo("error.");
+    assertThat(response.getBody().getDetail())
+        .isEqualTo("Invalid status [ERROR], accepted values: [active, disable]");
     assertThat(response.getBody().getType()).isNull();
   }
 
   @Test
   @DisplayName("I want to search for a user by creation date")
-  public void searchUserByCreationDate() throws IOException {
+  public void searchUserByCreationDate() {
     ResponseEntity<UserResponseDto[]> response =
         request.exchange(
             "/users?page=1&limit=3&creation_date_start=2020-03-21&creation_date_end=2020-03-23",
@@ -165,15 +173,18 @@ public class HttpUserSearchTest extends AbstractUserTest {
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-    assertThat(response.getBody()).hasSize(3);
+    assertThat(response.getBody()).hasSize(2);
 
-    assertThat(response.getHeaders().get(DefaultHeader.HEADER_CONTENT_RANGE).get(0)).isEqualTo("3");
-    assertThat(response.getHeaders().get(DefaultHeader.HEADER_ACCEPT_RANGE).get(0)).isEqualTo("10");
+    assertThat(response.getBody()[0].getName()).isEqualTo("Usuário 01");
+    assertThat(response.getBody()[1].getName()).isEqualTo("Usuário 02");
+
+    assertThat(response.getHeaders().get(HEADER_CONTENT_RANGE).get(0)).isEqualTo("2");
+    assertThat(response.getHeaders().get(HEADER_ACCEPT_RANGE).get(0)).isEqualTo("100");
   }
 
   @Test
   @DisplayName("I want to search for a user by creation date with an invalid date")
-  public void searchUserByCreationDateWithInvalidDate() throws IOException {
+  public void searchUserByCreationDateWithInvalidDate() {
     ResponseEntity<DefaultErrorResponse> response =
         request.exchange(
             "/users?page=1&limit=3&creation_date_start=2020-03-21&creation_date_end=2020",
@@ -186,16 +197,17 @@ public class HttpUserSearchTest extends AbstractUserTest {
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     assertThat(response.getBody().getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     assertThat(response.getBody().getTitle()).isEqualTo(HttpStatus.BAD_REQUEST.getReasonPhrase());
-    assertThat(response.getBody().getDetail()).isEqualTo("error.");
+    assertThat(response.getBody().getDetail())
+        .isEqualTo("Invalid date format for the value [2020]. Use the date in ISO 8601 format");
     assertThat(response.getBody().getType()).isNull();
   }
 
   @Test
   @DisplayName("I want to search for a user sorting by name")
-  public void searchUserSortingByName() throws IOException {
+  public void searchUserSortingByName() {
     ResponseEntity<UserResponseDto[]> response =
         request.exchange(
-            "/users?page=1&limit=3sort=name",
+            "/users?page=1&limit=3&sort=name",
             HttpMethod.GET,
             HttpEntity.EMPTY,
             UserResponseDto[].class);
@@ -206,20 +218,20 @@ public class HttpUserSearchTest extends AbstractUserTest {
 
     assertThat(usersResponse).hasSize(3);
 
-    assertThat(response.getHeaders().get(DefaultHeader.HEADER_CONTENT_RANGE).get(0)).isEqualTo("5");
-    assertThat(response.getHeaders().get(DefaultHeader.HEADER_ACCEPT_RANGE).get(0)).isEqualTo("10");
+    assertThat(response.getHeaders().get(HEADER_CONTENT_RANGE).get(0)).isEqualTo("5");
+    assertThat(response.getHeaders().get(HEADER_ACCEPT_RANGE).get(0)).isEqualTo("100");
 
-    assertThat(usersResponse[0].getName()).isEqualTo("usuário01");
-    assertThat(usersResponse[1].getName()).isEqualTo("usuário02");
-    assertThat(usersResponse[2].getName()).isEqualTo("usuário03");
+    assertThat(usersResponse[0].getName()).isEqualTo("Usuário 01");
+    assertThat(usersResponse[1].getName()).isEqualTo("Usuário 02");
+    assertThat(usersResponse[2].getName()).isEqualTo("Usuário 03");
   }
 
   @Test
   @DisplayName("I want to search for a user sorting by email")
-  public void searchUserSortingByEmail() throws IOException {
+  public void searchUserSortingByEmail() {
     ResponseEntity<UserResponseDto[]> response =
         request.exchange(
-            "/users?page=1&limit=3sort=email",
+            "/users?page=1&limit=3&sort=email",
             HttpMethod.GET,
             HttpEntity.EMPTY,
             UserResponseDto[].class);
@@ -230,8 +242,8 @@ public class HttpUserSearchTest extends AbstractUserTest {
 
     assertThat(usersResponse).hasSize(3);
 
-    assertThat(response.getHeaders().get(DefaultHeader.HEADER_CONTENT_RANGE).get(0)).isEqualTo("5");
-    assertThat(response.getHeaders().get(DefaultHeader.HEADER_ACCEPT_RANGE).get(0)).isEqualTo("10");
+    assertThat(response.getHeaders().get(HEADER_CONTENT_RANGE).get(0)).isEqualTo("5");
+    assertThat(response.getHeaders().get(HEADER_ACCEPT_RANGE).get(0)).isEqualTo("100");
 
     assertThat(usersResponse[0].getEmail()).isEqualTo("usuario01@sensedia.com");
     assertThat(usersResponse[1].getEmail()).isEqualTo("usuario02@sensedia.com");
@@ -240,10 +252,10 @@ public class HttpUserSearchTest extends AbstractUserTest {
 
   @Test
   @DisplayName("I want to search for a user sorting by status")
-  public void searchUserSortingByStatus() throws IOException {
+  public void searchUserSortingByStatus() {
     ResponseEntity<UserResponseDto[]> response =
         request.exchange(
-            "/users?page=1&limit=3sort=status",
+            "/users?page=1&limit=3&sort=status",
             HttpMethod.GET,
             HttpEntity.EMPTY,
             UserResponseDto[].class);
@@ -254,20 +266,20 @@ public class HttpUserSearchTest extends AbstractUserTest {
 
     assertThat(usersResponse).hasSize(3);
 
-    assertThat(response.getHeaders().get(DefaultHeader.HEADER_CONTENT_RANGE).get(0)).isEqualTo("5");
-    assertThat(response.getHeaders().get(DefaultHeader.HEADER_ACCEPT_RANGE).get(0)).isEqualTo("10");
+    assertThat(response.getHeaders().get(HEADER_CONTENT_RANGE).get(0)).isEqualTo("5");
+    assertThat(response.getHeaders().get(HEADER_ACCEPT_RANGE).get(0)).isEqualTo("100");
 
-    assertThat(usersResponse[0].getName()).isEqualTo("usuário01");
-    assertThat(usersResponse[1].getName()).isEqualTo("usuário02");
-    assertThat(usersResponse[2].getName()).isEqualTo("usuário03");
+    assertThat(usersResponse[0].getName()).isEqualTo("Usuário 01");
+    assertThat(usersResponse[1].getName()).isEqualTo("Usuário 03");
+    assertThat(usersResponse[2].getName()).isEqualTo("Usuário 05");
   }
 
   @Test
   @DisplayName("I want to search for a user sorting by creation date")
-  public void searchUserSortingByCreationDate() throws IOException {
+  public void searchUserSortingByCreationDate() {
     ResponseEntity<UserResponseDto[]> response =
         request.exchange(
-            "/users?page=1&limit=3sort=creation_date",
+            "/users?page=1&limit=3&sort=creation_date",
             HttpMethod.GET,
             HttpEntity.EMPTY,
             UserResponseDto[].class);
@@ -278,39 +290,40 @@ public class HttpUserSearchTest extends AbstractUserTest {
 
     assertThat(usersResponse).hasSize(3);
 
-    assertThat(response.getHeaders().get(DefaultHeader.HEADER_CONTENT_RANGE).get(0)).isEqualTo("5");
-    assertThat(response.getHeaders().get(DefaultHeader.HEADER_ACCEPT_RANGE).get(0)).isEqualTo("10");
+    assertThat(response.getHeaders().get(HEADER_CONTENT_RANGE).get(0)).isEqualTo("5");
+    assertThat(response.getHeaders().get(HEADER_ACCEPT_RANGE).get(0)).isEqualTo("100");
 
-    assertThat(usersResponse[0].getName()).isEqualTo("usuário01");
-    assertThat(usersResponse[1].getName()).isEqualTo("usuário02");
-    assertThat(usersResponse[2].getName()).isEqualTo("usuário03");
+    assertThat(usersResponse[0].getName()).isEqualTo("Usuário 01");
+    assertThat(usersResponse[1].getName()).isEqualTo("Usuário 02");
+    assertThat(usersResponse[2].getName()).isEqualTo("Usuário 03");
   }
 
   @Test
   @DisplayName("I want to search for a user with an invalid sort")
-  public void searchUserWithInvalidSort() throws IOException {
+  public void searchUserWithInvalidSort() {
     ResponseEntity<DefaultErrorResponse> response =
-            request.exchange(
-                    "/users?page=1&limit=3&sort=invalid",
-                    HttpMethod.GET,
-                    HttpEntity.EMPTY,
-                    DefaultErrorResponse.class);
+        request.exchange(
+            "/users?page=1&limit=3&sort=invalid",
+            HttpMethod.GET,
+            HttpEntity.EMPTY,
+            DefaultErrorResponse.class);
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     assertThat(response.getBody().getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     assertThat(response.getBody().getTitle()).isEqualTo(HttpStatus.BAD_REQUEST.getReasonPhrase());
-    assertThat(response.getBody().getDetail()).isEqualTo("error.");
+    assertThat(response.getBody().getDetail())
+        .isEqualTo("Invalid sort [invalid], accepted values: [name, email, status, creation_date]");
     assertThat(response.getBody().getType()).isNull();
   }
 
   @Test
   @DisplayName("I want to search for a user in descending order")
-  public void searchUserDescendingOrder() throws IOException {
+  public void searchUserDescendingOrder() {
     ResponseEntity<UserResponseDto[]> response =
         request.exchange(
-            "/users?page=1&limit=3sort=name&order=desc",
+            "/users?page=1&limit=3&sort=name&sort_type=desc",
             HttpMethod.GET,
             HttpEntity.EMPTY,
             UserResponseDto[].class);
@@ -321,20 +334,20 @@ public class HttpUserSearchTest extends AbstractUserTest {
 
     assertThat(usersResponse).hasSize(3);
 
-    assertThat(response.getHeaders().get(DefaultHeader.HEADER_CONTENT_RANGE).get(0)).isEqualTo("5");
-    assertThat(response.getHeaders().get(DefaultHeader.HEADER_ACCEPT_RANGE).get(0)).isEqualTo("10");
+    assertThat(response.getHeaders().get(HEADER_CONTENT_RANGE).get(0)).isEqualTo("5");
+    assertThat(response.getHeaders().get(HEADER_ACCEPT_RANGE).get(0)).isEqualTo("100");
 
-    assertThat(usersResponse[0].getName()).isEqualTo("usuário05");
-    assertThat(usersResponse[1].getName()).isEqualTo("usuário04");
-    assertThat(usersResponse[2].getName()).isEqualTo("usuário03");
+    assertThat(usersResponse[0].getName()).isEqualTo("Usuário 05");
+    assertThat(usersResponse[1].getName()).isEqualTo("Usuário 04");
+    assertThat(usersResponse[2].getName()).isEqualTo("Usuário 03");
   }
 
   @Test
   @DisplayName("I want to search for a user in ascending order")
-  public void searchUserAscendingOrder() throws IOException {
+  public void searchUserAscendingOrder() {
     ResponseEntity<UserResponseDto[]> response =
         request.exchange(
-            "/users?page=1&limit=3sort=name&order=asc",
+            "/users?page=1&limit=3&sort=name&order_type=asc",
             HttpMethod.GET,
             HttpEntity.EMPTY,
             UserResponseDto[].class);
@@ -345,36 +358,37 @@ public class HttpUserSearchTest extends AbstractUserTest {
 
     assertThat(usersResponse).hasSize(3);
 
-    assertThat(response.getHeaders().get(DefaultHeader.HEADER_CONTENT_RANGE).get(0)).isEqualTo("5");
-    assertThat(response.getHeaders().get(DefaultHeader.HEADER_ACCEPT_RANGE).get(0)).isEqualTo("10");
+    assertThat(response.getHeaders().get(HEADER_CONTENT_RANGE).get(0)).isEqualTo("5");
+    assertThat(response.getHeaders().get(HEADER_ACCEPT_RANGE).get(0)).isEqualTo("100");
 
-    assertThat(usersResponse[0].getName()).isEqualTo("usuário01");
-    assertThat(usersResponse[1].getName()).isEqualTo("usuário02");
-    assertThat(usersResponse[2].getName()).isEqualTo("usuário03");
+    assertThat(usersResponse[0].getName()).isEqualTo("Usuário 01");
+    assertThat(usersResponse[1].getName()).isEqualTo("Usuário 02");
+    assertThat(usersResponse[2].getName()).isEqualTo("Usuário 03");
   }
 
   @Test
   @DisplayName("I want to search for a user in ascending order")
-  public void searchUserWithInvalidOrder() throws IOException {
+  public void searchUserWithInvalidOrder() {
     ResponseEntity<DefaultErrorResponse> response =
-            request.exchange(
-                    "/users?page=1&limit=3&order=invalid",
-                    HttpMethod.GET,
-                    HttpEntity.EMPTY,
-                    DefaultErrorResponse.class);
+        request.exchange(
+            "/users?page=1&limit=3&sort_type=invalid",
+            HttpMethod.GET,
+            HttpEntity.EMPTY,
+            DefaultErrorResponse.class);
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     assertThat(response.getBody().getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     assertThat(response.getBody().getTitle()).isEqualTo(HttpStatus.BAD_REQUEST.getReasonPhrase());
-    assertThat(response.getBody().getDetail()).isEqualTo("error.");
+    assertThat(response.getBody().getDetail())
+        .isEqualTo("Invalid sort type [invalid], accepted values: [asc, desc]");
     assertThat(response.getBody().getType()).isNull();
   }
 
   @Test
   @DisplayName("I want to search for a user on page two")
-  public void searchUserOnPageTwo() throws IOException {
+  public void searchUserOnPageTwo() {
     ResponseEntity<UserResponseDto[]> response =
         request.exchange(
             "/users?page=2&limit=3", HttpMethod.GET, HttpEntity.EMPTY, UserResponseDto[].class);
@@ -385,14 +399,67 @@ public class HttpUserSearchTest extends AbstractUserTest {
 
     assertThat(usersResponse).hasSize(2);
 
-    assertThat(response.getHeaders().get(DefaultHeader.HEADER_CONTENT_RANGE).get(0)).isEqualTo("5");
-    assertThat(response.getHeaders().get(DefaultHeader.HEADER_ACCEPT_RANGE).get(0)).isEqualTo("10");
+    assertThat(response.getHeaders().get(HEADER_CONTENT_RANGE).get(0)).isEqualTo("5");
+    assertThat(response.getHeaders().get(HEADER_ACCEPT_RANGE).get(0)).isEqualTo("100");
 
-    assertThat(usersResponse[0].getName()).isEqualTo("usuário04");
-    assertThat(usersResponse[1].getName()).isEqualTo("usuário05");
+    assertThat(usersResponse[0].getName()).isEqualTo("Usuário 04");
+    assertThat(usersResponse[1].getName()).isEqualTo("Usuário 05");
   }
 
   @Test
-  @DisplayName("I want to search for a user and receive a database error")
-  public void searchUserAndReceiveDatabaseError() throws IOException {}
+  @DisplayName("I want to search for a user with zero limit")
+  public void searchUserWithZeroLimit() {
+    ResponseEntity<DefaultErrorResponse> response =
+        request.exchange(
+            "/users?page=1&limit=0", HttpMethod.GET, HttpEntity.EMPTY, DefaultErrorResponse.class);
+
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    assertThat(response.getBody().getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    assertThat(response.getBody().getTitle()).isEqualTo(HttpStatus.BAD_REQUEST.getReasonPhrase());
+    assertThat(response.getBody().getDetail()).isEqualTo("limit deve ser maior ou igual a 1.");
+    assertThat(response.getBody().getType()).isNull();
+  }
+
+  @Test
+  @DisplayName("I want to search for a user on page zero")
+  public void searchUserWithOnPageZero() {
+    ResponseEntity<DefaultErrorResponse> response =
+        request.exchange(
+            "/users?page=0&limit=3", HttpMethod.GET, HttpEntity.EMPTY, DefaultErrorResponse.class);
+
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    assertThat(response.getBody().getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    assertThat(response.getBody().getTitle()).isEqualTo(HttpStatus.BAD_REQUEST.getReasonPhrase());
+    assertThat(response.getBody().getDetail()).isEqualTo("page deve ser maior ou igual a 1.");
+    assertThat(response.getBody().getType()).isNull();
+  }
+
+  @Test
+  @DisplayName("I want to search for a user with a higher limit than the maximum limit")
+  public void searchUserWithHigherLimitThanMaximumLimit() {
+    ResponseEntity<DefaultErrorResponse> response =
+        request.exchange(
+            "/users?page=1&limit=1000",
+            HttpMethod.GET,
+            HttpEntity.EMPTY,
+            DefaultErrorResponse.class);
+
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.PRECONDITION_FAILED);
+
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.PRECONDITION_FAILED);
+    assertThat(response.getBody().getStatus()).isEqualTo(HttpStatus.PRECONDITION_FAILED.value());
+    assertThat(response.getBody().getTitle())
+        .isEqualTo(HttpStatus.PRECONDITION_FAILED.getReasonPhrase());
+    assertThat(response.getBody().getDetail())
+        .isEqualTo("The 'limit' field is greater than the configured maximum limit [100]");
+    assertThat(response.getBody().getType()).isNull();
+  }
+
+//  @Test
+//  @DisplayName("I want to search for a user and receive a database error")
+//  public void searchUserAndReceiveDatabaseError() {}
 }
