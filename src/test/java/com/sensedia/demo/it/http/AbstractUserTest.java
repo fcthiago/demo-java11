@@ -13,6 +13,7 @@ import org.springframework.cloud.stream.test.binder.MessageCollector;
 import org.springframework.core.io.Resource;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
