@@ -7,7 +7,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.time.Instant;
-import java.util.Objects;
 
 @Valid
 public class UserSearch {
@@ -99,28 +98,6 @@ public class UserSearch {
 
   void setSortType(SortType sortType) {
     this.sortType = sortType;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    UserSearch that = (UserSearch) o;
-    return Objects.equals(name, that.name)
-        && Objects.equals(email, that.email)
-        && status == that.status
-        && Objects.equals(page, that.page)
-        && Objects.equals(limit, that.limit)
-        && Objects.equals(createDateStart, that.createDateStart)
-        && Objects.equals(createDateEnd, that.createDateEnd)
-        && sort == that.sort
-        && sortType == that.sortType;
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(
-        name, email, status, page, limit, createDateStart, createDateEnd, sort, sortType);
   }
 
   @Override

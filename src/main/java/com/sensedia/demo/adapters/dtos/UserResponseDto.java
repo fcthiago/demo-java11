@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.time.Instant;
-import java.util.Objects;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
@@ -60,23 +59,6 @@ public class UserResponseDto {
 
   public void setCreationDate(Instant creationDate) {
     this.creationDate = creationDate;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    UserResponseDto that = (UserResponseDto) o;
-    return Objects.equals(id, that.id)
-        && Objects.equals(name, that.name)
-        && Objects.equals(email, that.email)
-        && Objects.equals(status, that.status)
-        && Objects.equals(creationDate, that.creationDate);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(id, name, email, status, creationDate);
   }
 
   @Override

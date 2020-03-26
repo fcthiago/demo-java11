@@ -4,16 +4,14 @@ import com.sensedia.commons.exceptions.BadRequestException;
 import org.apache.commons.lang3.StringUtils;
 
 public enum Sort {
-  NAME("name", "name"),
-  EMAIL("email", "email"),
-  STATUS("status", "status"),
-  CREATION_DATE("creation_date", "creationDate");
+  NAME("name"),
+  EMAIL("email"),
+  STATUS("status"),
+  CREATION_DATE("creationDate");
 
-  private String value;
   private String fieldName;
 
-  Sort(String value, String fieldName) {
-    this.value = value;
+  Sort(String fieldName) {
     this.fieldName = fieldName;
   }
 
@@ -21,7 +19,7 @@ public enum Sort {
     if (StringUtils.isBlank(value)) return null;
 
     for (Sort sort : Sort.values()) {
-      if (sort.value.equalsIgnoreCase(value)) {
+      if (sort.name().equalsIgnoreCase(value)) {
         return sort;
       }
     }
@@ -30,16 +28,12 @@ public enum Sort {
         "Invalid sort [" + value + "], accepted values: [name, email, status, creation_date]");
   }
 
-  public String getValue() {
-    return value;
-  }
-
   public String getFieldName() {
     return fieldName;
   }
 
   @Override
   public String toString() {
-    return String.valueOf(value);
+    return this.name();
   }
 }

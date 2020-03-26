@@ -2,6 +2,7 @@ package com.sensedia.demo.it.http;
 
 import com.sensedia.commons.exceptions.DefaultErrorResponse;
 import com.sensedia.demo.adapters.dtos.UserResponseDto;
+import com.sensedia.demo.domains.UserStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,10 +14,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.io.IOException;
+import java.time.Instant;
 
 import static com.sensedia.commons.headers.DefaultHeader.HEADER_ACCEPT_RANGE;
 import static com.sensedia.commons.headers.DefaultHeader.HEADER_CONTENT_RANGE;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.http.HttpStatus.*;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class HttpUserSearchTest extends AbstractUserTest {
@@ -59,7 +62,14 @@ public class HttpUserSearchTest extends AbstractUserTest {
 
     assertThat(response.getBody()).hasSize(1);
 
-    assertThat(response.getBody()[0].getName()).isEqualTo("Usuário 01");
+    UserResponseDto userResponseDto = response.getBody()[0];
+
+    assertThat(userResponseDto.getId()).isEqualTo("887816e0-59fc-4dd3-a1dc-40f70fe1c650");
+    assertThat(userResponseDto.getName()).isEqualTo("Usuário 01");
+    assertThat(userResponseDto.getEmail()).isEqualTo("usuario01@sensedia.com");
+    assertThat(userResponseDto.getStatus()).isEqualTo(UserStatus.ACTIVE.name());
+    assertThat(userResponseDto.getCreationDate())
+        .isEqualTo(Instant.parse("2020-03-21T16:07:44.260Z"));
 
     assertThat(response.getHeaders().get(HEADER_CONTENT_RANGE).get(0)).isEqualTo("1");
     assertThat(response.getHeaders().get(HEADER_ACCEPT_RANGE).get(0)).isEqualTo("100");
@@ -78,6 +88,10 @@ public class HttpUserSearchTest extends AbstractUserTest {
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
     assertThat(response.getBody()).hasSize(3);
+
+    assertThat(response.getBody()[0].getName()).isEqualTo("Usuário 01");
+    assertThat(response.getBody()[1].getName()).isEqualTo("Usuário 02");
+    assertThat(response.getBody()[2].getName()).isEqualTo("Usuário 03");
 
     assertThat(response.getHeaders().get(HEADER_CONTENT_RANGE).get(0)).isEqualTo("5");
     assertThat(response.getHeaders().get(HEADER_ACCEPT_RANGE).get(0)).isEqualTo("100");
@@ -117,6 +131,10 @@ public class HttpUserSearchTest extends AbstractUserTest {
 
     assertThat(response.getBody()).hasSize(3);
 
+    assertThat(response.getBody()[0].getName()).isEqualTo("Usuário 01");
+    assertThat(response.getBody()[1].getName()).isEqualTo("Usuário 02");
+    assertThat(response.getBody()[2].getName()).isEqualTo("Usuário 03");
+
     assertThat(response.getHeaders().get(HEADER_CONTENT_RANGE).get(0)).isEqualTo("5");
     assertThat(response.getHeaders().get(HEADER_ACCEPT_RANGE).get(0)).isEqualTo("100");
   }
@@ -136,6 +154,8 @@ public class HttpUserSearchTest extends AbstractUserTest {
     assertThat(response.getBody()).hasSize(3);
 
     assertThat(response.getBody()[0].getName()).isEqualTo("Usuário 01");
+    assertThat(response.getBody()[1].getName()).isEqualTo("Usuário 02");
+    assertThat(response.getBody()[2].getName()).isEqualTo("Usuário 03");
 
     assertThat(response.getHeaders().get(HEADER_CONTENT_RANGE).get(0)).isEqualTo("4");
     assertThat(response.getHeaders().get(HEADER_ACCEPT_RANGE).get(0)).isEqualTo("100");
@@ -151,11 +171,11 @@ public class HttpUserSearchTest extends AbstractUserTest {
             HttpEntity.EMPTY,
             DefaultErrorResponse.class);
 
-    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
 
-    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-    assertThat(response.getBody().getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-    assertThat(response.getBody().getTitle()).isEqualTo(HttpStatus.BAD_REQUEST.getReasonPhrase());
+    assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
+    assertThat(response.getBody().getStatus()).isEqualTo(BAD_REQUEST.value());
+    assertThat(response.getBody().getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
     assertThat(response.getBody().getDetail())
         .isEqualTo("Invalid status [ERROR], accepted values: [active, disable]");
     assertThat(response.getBody().getType()).isNull();
@@ -192,11 +212,11 @@ public class HttpUserSearchTest extends AbstractUserTest {
             HttpEntity.EMPTY,
             DefaultErrorResponse.class);
 
-    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
 
-    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-    assertThat(response.getBody().getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-    assertThat(response.getBody().getTitle()).isEqualTo(HttpStatus.BAD_REQUEST.getReasonPhrase());
+    assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
+    assertThat(response.getBody().getStatus()).isEqualTo(BAD_REQUEST.value());
+    assertThat(response.getBody().getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
     assertThat(response.getBody().getDetail())
         .isEqualTo("Invalid date format for the value [2020]. Use the date in ISO 8601 format");
     assertThat(response.getBody().getType()).isNull();
@@ -217,6 +237,10 @@ public class HttpUserSearchTest extends AbstractUserTest {
     UserResponseDto[] usersResponse = response.getBody();
 
     assertThat(usersResponse).hasSize(3);
+
+    assertThat(response.getBody()[0].getName()).isEqualTo("Usuário 01");
+    assertThat(response.getBody()[1].getName()).isEqualTo("Usuário 02");
+    assertThat(response.getBody()[2].getName()).isEqualTo("Usuário 03");
 
     assertThat(response.getHeaders().get(HEADER_CONTENT_RANGE).get(0)).isEqualTo("5");
     assertThat(response.getHeaders().get(HEADER_ACCEPT_RANGE).get(0)).isEqualTo("100");
@@ -308,11 +332,11 @@ public class HttpUserSearchTest extends AbstractUserTest {
             HttpEntity.EMPTY,
             DefaultErrorResponse.class);
 
-    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
 
-    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-    assertThat(response.getBody().getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-    assertThat(response.getBody().getTitle()).isEqualTo(HttpStatus.BAD_REQUEST.getReasonPhrase());
+    assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
+    assertThat(response.getBody().getStatus()).isEqualTo(BAD_REQUEST.value());
+    assertThat(response.getBody().getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
     assertThat(response.getBody().getDetail())
         .isEqualTo("Invalid sort [invalid], accepted values: [name, email, status, creation_date]");
     assertThat(response.getBody().getType()).isNull();
@@ -376,11 +400,11 @@ public class HttpUserSearchTest extends AbstractUserTest {
             HttpEntity.EMPTY,
             DefaultErrorResponse.class);
 
-    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
 
-    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-    assertThat(response.getBody().getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-    assertThat(response.getBody().getTitle()).isEqualTo(HttpStatus.BAD_REQUEST.getReasonPhrase());
+    assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
+    assertThat(response.getBody().getStatus()).isEqualTo(BAD_REQUEST.value());
+    assertThat(response.getBody().getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
     assertThat(response.getBody().getDetail())
         .isEqualTo("Invalid sort type [invalid], accepted values: [asc, desc]");
     assertThat(response.getBody().getType()).isNull();
@@ -413,11 +437,11 @@ public class HttpUserSearchTest extends AbstractUserTest {
         request.exchange(
             "/users?page=1&limit=0", HttpMethod.GET, HttpEntity.EMPTY, DefaultErrorResponse.class);
 
-    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
 
-    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-    assertThat(response.getBody().getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-    assertThat(response.getBody().getTitle()).isEqualTo(HttpStatus.BAD_REQUEST.getReasonPhrase());
+    assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
+    assertThat(response.getBody().getStatus()).isEqualTo(BAD_REQUEST.value());
+    assertThat(response.getBody().getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
     assertThat(response.getBody().getDetail()).isEqualTo("limit deve ser maior ou igual a 1.");
     assertThat(response.getBody().getType()).isNull();
   }
@@ -429,11 +453,11 @@ public class HttpUserSearchTest extends AbstractUserTest {
         request.exchange(
             "/users?page=0&limit=3", HttpMethod.GET, HttpEntity.EMPTY, DefaultErrorResponse.class);
 
-    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
 
-    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-    assertThat(response.getBody().getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-    assertThat(response.getBody().getTitle()).isEqualTo(HttpStatus.BAD_REQUEST.getReasonPhrase());
+    assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
+    assertThat(response.getBody().getStatus()).isEqualTo(BAD_REQUEST.value());
+    assertThat(response.getBody().getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
     assertThat(response.getBody().getDetail()).isEqualTo("page deve ser maior ou igual a 1.");
     assertThat(response.getBody().getType()).isNull();
   }
@@ -448,18 +472,35 @@ public class HttpUserSearchTest extends AbstractUserTest {
             HttpEntity.EMPTY,
             DefaultErrorResponse.class);
 
-    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.PRECONDITION_FAILED);
+    assertThat(response.getStatusCode()).isEqualTo(PRECONDITION_FAILED);
 
-    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.PRECONDITION_FAILED);
-    assertThat(response.getBody().getStatus()).isEqualTo(HttpStatus.PRECONDITION_FAILED.value());
-    assertThat(response.getBody().getTitle())
-        .isEqualTo(HttpStatus.PRECONDITION_FAILED.getReasonPhrase());
+    assertThat(response.getStatusCode()).isEqualTo(PRECONDITION_FAILED);
+    assertThat(response.getBody().getStatus()).isEqualTo(PRECONDITION_FAILED.value());
+    assertThat(response.getBody().getTitle()).isEqualTo(PRECONDITION_FAILED.getReasonPhrase());
     assertThat(response.getBody().getDetail())
         .isEqualTo("The 'limit' field is greater than the configured maximum limit [100]");
     assertThat(response.getBody().getType()).isNull();
   }
 
-//  @Test
-//  @DisplayName("I want to search for a user and receive a database error")
-//  public void searchUserAndReceiveDatabaseError() {}
+  @Test
+  @DisplayName("I want to search for a user and receive a database error")
+  public void searchUserAndReceiveDatabaseError() {
+    try {
+      injectDatabaseError();
+
+      ResponseEntity<DefaultErrorResponse> response =
+          request.exchange("/users", HttpMethod.GET, HttpEntity.EMPTY, DefaultErrorResponse.class);
+
+      assertThat(response.getStatusCode()).isEqualTo(INTERNAL_SERVER_ERROR);
+
+      assertThat(response.getStatusCode()).isEqualTo(INTERNAL_SERVER_ERROR);
+      assertThat(response.getBody().getStatus()).isEqualTo(INTERNAL_SERVER_ERROR.value());
+      assertThat(response.getBody().getTitle()).isEqualTo(INTERNAL_SERVER_ERROR.getReasonPhrase());
+      assertThat(response.getBody().getDetail()).isEqualTo("database error");
+      assertThat(response.getBody().getType()).isNull();
+
+    } finally {
+      undoDatabaseError();
+    }
+  }
 }

@@ -17,7 +17,7 @@ public enum SortType {
     if (StringUtils.isBlank(value)) return null;
 
     for (SortType sortType : SortType.values()) {
-      if (sortType.value.equalsIgnoreCase(value)) {
+      if (sortType.name().equalsIgnoreCase(value)) {
         return sortType;
       }
     }
@@ -28,10 +28,5 @@ public enum SortType {
 
   public String getValue() {
     return value;
-  }
-
-  @Override
-  public String toString() {
-    return String.valueOf(value);
   }
 }

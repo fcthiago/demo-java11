@@ -14,6 +14,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingRequestHeaderException;
@@ -25,12 +26,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
-import java.io.IOException;
 import java.time.format.DateTimeParseException;
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @PropertySource(value = {"classpath:ValidationMessages.properties"})
@@ -47,7 +48,7 @@ public class ErrorHandler {
   @ExceptionHandler({ApplicationException.class})
   @ResponseBody
   public DefaultErrorResponse handleApplicationException(
-      HttpServletRequest req, HttpServletResponse res, ApplicationException e) {
+      HttpServletResponse res, ApplicationException e) {
     log.error("", e);
     res.setStatus(e.getDefaultErrorResponse().getStatus());
     return e.getDefaultErrorResponse();
@@ -57,9 +58,9 @@ public class ErrorHandler {
   @ExceptionHandler({MethodArgumentNotValidException.class})
   @ResponseBody
   public DefaultErrorResponse handleMethodArgumentNotValidException(
-      HttpServletRequest req, Exception e) {
+      MethodArgumentNotValidException e) {
     log.error("", e);
-    String errorMessage = buildItems(((MethodArgumentNotValidException) e).getBindingResult());
+    String errorMessage = buildItems(e.getBindingResult());
     return new DefaultErrorResponse(HttpStatus.BAD_REQUEST, errorMessage);
   }
 
@@ -67,37 +68,36 @@ public class ErrorHandler {
   @ExceptionHandler({MissingServletRequestParameterException.class})
   @ResponseBody
   public DefaultErrorResponse handleBadRequestMissingServletRequestParameterException(
-      HttpServletRequest req, Exception e) {
+      MissingServletRequestParameterException e) {
     log.error("", e);
-    String errorMessage = buildErrorMessage((MissingServletRequestParameterException) e);
+    String errorMessage = buildErrorMessage(e);
     return new DefaultErrorResponse(HttpStatus.BAD_REQUEST, errorMessage);
   }
 
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   @ExceptionHandler({JsonMappingException.class})
   @ResponseBody
-  public DefaultErrorResponse handleJsonMappingException(HttpServletRequest req, Exception e) {
+  public DefaultErrorResponse handleJsonMappingException(JsonMappingException e) {
     log.error("", e);
-    String errorMessage = buildErrorMessage((JsonMappingException) e.getCause());
+    String errorMessage = buildErrorMessage(e);
     return new DefaultErrorResponse(HttpStatus.BAD_REQUEST, errorMessage);
   }
 
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   @ExceptionHandler({DateTimeParseException.class})
   @ResponseBody
-  public DefaultErrorResponse handleDateTimeParseException(HttpServletRequest req, Exception e) {
+  public DefaultErrorResponse handleDateTimeParseException(DateTimeParseException e) {
     log.error("", e);
-    String errorMessage = buildErrorMessage((DateTimeParseException) e);
+    String errorMessage = buildErrorMessage(e);
     return new DefaultErrorResponse(HttpStatus.BAD_REQUEST, errorMessage);
   }
 
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   @ExceptionHandler({ConstraintViolationException.class})
   @ResponseBody
-  public DefaultErrorResponse handleConstraintViolationException(
-      HttpServletRequest req, Exception e) {
+  public DefaultErrorResponse handleConstraintViolationException(ConstraintViolationException e) {
     log.error("", e);
-    String message = errorFields(((ConstraintViolationException) e).getConstraintViolations());
+    String message = errorFields(e.getConstraintViolations());
     return new DefaultErrorResponse(HttpStatus.BAD_REQUEST, message);
   }
 
@@ -105,27 +105,24 @@ public class ErrorHandler {
   @ExceptionHandler({HttpMessageNotReadableException.class})
   @ResponseBody
   public DefaultErrorResponse handleHttpMessageNotReadableException(
-      HttpServletRequest req, Exception e) {
+      HttpMessageNotReadableException e) {
     log.error("", e);
-    String message = handleNotReadableMessage(req, (HttpMessageNotReadableException) e);
+    String message = handleNotReadableMessage(e);
     return new DefaultErrorResponse(HttpStatus.BAD_REQUEST, message);
   }
 
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
   @ExceptionHandler({Exception.class})
   @ResponseBody
-  public DefaultErrorResponse handleInternalError(HttpServletRequest req, Exception e) {
+  public DefaultErrorResponse handleInternalError(Exception e) {
     log.error("", e);
-    return new DefaultErrorResponse(
-        HttpStatus.INTERNAL_SERVER_ERROR.value(),
-        HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
-        e.getMessage());
+    return new DefaultErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
   }
 
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
   @ExceptionHandler({InternalError.class})
   @ResponseBody
-  public DefaultErrorResponse handleInternalErrorImpl(HttpServletRequest req, Exception e) {
+  public DefaultErrorResponse handleInternalErrorImpl(InternalError e) {
     log.error("", e);
     return new DefaultErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
   }
@@ -133,7 +130,7 @@ public class ErrorHandler {
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
   @ExceptionHandler({NullPointerException.class})
   @ResponseBody
-  public DefaultErrorResponse handleNullPointer(HttpServletRequest req, Exception e) {
+  public DefaultErrorResponse handleNullPointer(NullPointerException e) {
     log.error("", e);
     return new DefaultErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
   }
@@ -141,7 +138,7 @@ public class ErrorHandler {
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   @ExceptionHandler({IllegalArgumentException.class})
   @ResponseBody
-  public DefaultErrorResponse handleIllegalArgument(HttpServletRequest req, Exception e) {
+  public DefaultErrorResponse handleIllegalArgument(Exception e) {
     log.error("", e);
     return new DefaultErrorResponse(HttpStatus.BAD_REQUEST, e.getMessage());
   }
@@ -150,9 +147,9 @@ public class ErrorHandler {
   @ExceptionHandler({MissingRequestHeaderException.class})
   @ResponseBody
   public DefaultErrorResponse handleBadRequestMissingRequestHeaderException(
-      HttpServletRequest req, Exception e) throws IOException {
+      MissingRequestHeaderException e) {
     log.error("", e);
-    String errorMessage = buildErrorMessage((MissingRequestHeaderException) e);
+    String errorMessage = buildErrorMessage(e);
     return new DefaultErrorResponse(HttpStatus.BAD_REQUEST, errorMessage);
   }
 
@@ -160,19 +157,18 @@ public class ErrorHandler {
   @ExceptionHandler({MethodArgumentTypeMismatchException.class})
   @ResponseBody
   public DefaultErrorResponse handleMethodArgumentTypeMismatchException(
-      HttpServletRequest req, Exception e) {
+      MethodArgumentTypeMismatchException e) {
     log.error("", e);
-    String errorMessage = buildErrorMessage((MethodArgumentTypeMismatchException) e);
+    String errorMessage = buildErrorMessage(e);
     return new DefaultErrorResponse(HttpStatus.BAD_REQUEST, errorMessage);
   }
 
-  @ResponseStatus(HttpStatus.NOT_FOUND)
+  @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
   @ExceptionHandler({HttpRequestMethodNotSupportedException.class})
   @ResponseBody
-  public DefaultErrorResponse handleHttpRequestMethodNotSupportedException(
-      HttpServletRequest req, Exception e) {
+  public DefaultErrorResponse handleHttpRequestMethodNotSupportedException(Exception e) {
     log.error("", e);
-    return new DefaultErrorResponse(HttpStatus.NOT_FOUND);
+    return new DefaultErrorResponse(HttpStatus.METHOD_NOT_ALLOWED);
   }
 
   @ExceptionHandler(NoHandlerFoundException.class)
@@ -183,10 +179,13 @@ public class ErrorHandler {
   }
 
   private String errorFields(Set<ConstraintViolation<?>> constraintsViolation) {
-    if (constraintsViolation == null || constraintsViolation.isEmpty()) {
-      return "";
-    }
-    ConstraintViolation<?> constraintViolation = constraintsViolation.stream().findFirst().get();
+    if (constraintsViolation == null || constraintsViolation.isEmpty()) return StringUtils.EMPTY;
+
+    Optional<ConstraintViolation<?>> optional = constraintsViolation.stream().findFirst();
+
+    if (optional.isEmpty()) return StringUtils.EMPTY;
+
+    ConstraintViolation<?> constraintViolation = optional.get();
     NodeImpl node = ((PathImpl) constraintViolation.getPropertyPath()).getLeafNode();
     String message = constraintViolation.getMessage();
     return convertToSnakeCase(node.getName()) + " " + message;
@@ -213,8 +212,7 @@ public class ErrorHandler {
     return StringUtils.join(convertToSnakeCase(e.getMessage()), " ", invalidFieldMessage);
   }
 
-  private String handleNotReadableMessage(
-      HttpServletRequest req, HttpMessageNotReadableException e) {
+  private String handleNotReadableMessage(HttpMessageNotReadableException e) {
     if (e.getCause() instanceof JsonMappingException) {
       return buildErrorMessage((JsonMappingException) e.getCause());
     }
@@ -227,14 +225,16 @@ public class ErrorHandler {
   }
 
   private String buildItems(BindingResult bindingResult) {
-    if (bindingResult.getFieldErrors().isEmpty()) {
-      return "";
-    }
-    String errorMessage =
-        convertToSnakeCase(bindingResult.getFieldErrors().get(0).getField())
-            + " "
-            + bindingResult.getFieldErrors().stream().findFirst().get().getDefaultMessage();
+    List<FieldError> fieldErrors = bindingResult.getFieldErrors();
 
-    return errorMessage;
+    if (fieldErrors.isEmpty()) return StringUtils.EMPTY;
+
+    Optional<FieldError> optional = fieldErrors.stream().findFirst();
+
+    if (optional.isEmpty()) return StringUtils.EMPTY;
+
+    return convertToSnakeCase(fieldErrors.get(0).getField())
+        + " "
+        + optional.get().getDefaultMessage();
   }
 }

@@ -2,7 +2,9 @@ package com.sensedia.demo.it.http;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mongodb.MongoTimeoutException;
 import com.sensedia.demo.adapters.amqp.config.BrokerOutput;
+import com.sensedia.demo.applications.UserApplication;
 import com.sensedia.demo.domains.User;
 import com.sensedia.demo.ports.RepositoryPort;
 import io.micrometer.core.instrument.util.IOUtils;
@@ -11,11 +13,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.cloud.stream.test.binder.MessageCollector;
 import org.springframework.core.io.Resource;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public abstract class AbstractUserTest {
 
@@ -33,6 +39,8 @@ public abstract class AbstractUserTest {
 
   @Autowired BrokerOutput output;
 
+  @Autowired private UserApplication userApplication;
+
   @Value("classpath:users.json")
   private Resource usersJson;
 
@@ -49,5 +57,16 @@ public abstract class AbstractUserTest {
   boolean isUUID(String uuid) {
     return uuid.matches(
         "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
+  }
+
+  void injectDatabaseError() {
+    RepositoryPort failingRepository = mock(RepositoryPort.class);
+    ReflectionTestUtils.setField(userApplication, "repository", failingRepository);
+    when(failingRepository.save(any())).thenThrow(new MongoTimeoutException("database error"));
+    when(failingRepository.findAll(any())).thenThrow(new MongoTimeoutException("database error"));
+  }
+
+  void undoDatabaseError() {
+    ReflectionTestUtils.setField(userApplication, "repository", repository);
   }
 }
