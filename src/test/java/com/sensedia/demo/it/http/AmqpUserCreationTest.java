@@ -6,11 +6,10 @@ import com.sensedia.demo.adapters.dtos.UserCreationDto;
 import com.sensedia.demo.adapters.dtos.UserResponseDto;
 import com.sensedia.demo.domains.User;
 import com.sensedia.demo.domains.UserStatus;
-import com.sensedia.demo.utils.BrokerResponse;
+import com.sensedia.demo.commons.BrokerResponse;
 import org.junit.jupiter.api.*;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.http.HttpStatus;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
@@ -21,7 +20,6 @@ import static com.sensedia.commons.headers.DefaultHeader.APP_ID_HEADER_NAME;
 import static com.sensedia.commons.headers.DefaultHeader.EVENT_NAME_HEADER_HEADER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @TestMethodOrder(MethodOrderer.Alphanumeric.class)

@@ -1,4 +1,4 @@
-package com.sensedia.demo.utils;
+package com.sensedia.demo.commons;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;

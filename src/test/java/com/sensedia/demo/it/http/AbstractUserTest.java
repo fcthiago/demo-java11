@@ -8,7 +8,7 @@ import com.sensedia.demo.adapters.amqp.config.BrokerOutput;
 import com.sensedia.demo.applications.UserApplication;
 import com.sensedia.demo.domains.User;
 import com.sensedia.demo.ports.RepositoryPort;
-import com.sensedia.demo.utils.MessageCollectorCustom;
+import com.sensedia.demo.commons.MessageCollectorCustom;
 import io.micrometer.core.instrument.util.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

@@ -4,7 +4,7 @@ import com.sensedia.commons.errors.domains.DefaultErrorResponse;
 import com.sensedia.demo.adapters.dtos.UserResponseDto;
 import com.sensedia.demo.domains.User;
 import com.sensedia.demo.domains.UserStatus;
-import com.sensedia.demo.utils.BrokerResponse;
+import com.sensedia.demo.commons.BrokerResponse;
 import org.junit.jupiter.api.*;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
