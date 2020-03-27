@@ -16,17 +16,17 @@ spring:
       bindings:
         subscribeUserCreationRequested:
           destination: x-user-creation-requested
-          group: demo
+          group: q-demo-user-creation-requested
           consumer:
             maxAttempts: 1
         subscribeUserUpdateRequested:
           destination: x-user-update-requested
-          group: demo
+          group: q-demo-user-update-requested
           consumer:
             maxAttempts: 1
         subscribeUserDeletionRequested:
           destination: x-user-deletion-requested
-          group: q-demo
+          group: q-demo-user-deletion-requested
           consumer:
             maxAttempts: 1
 
@@ -52,6 +52,7 @@ spring:
               dlqExpires: ${rabbitmq_dlqExpires:1000}
               prefetch: ${rabbitmq_prefetch:1}
               exchangeType: fanout
+              queueNameGroupOnly: true
 
           subscribeUserUpdateRequested:
             consumer:
@@ -64,6 +65,7 @@ spring:
               dlqExpires: ${rabbitmq_dlqExpires:1000}
               prefetch: ${rabbitmq_prefetch:1}
               exchangeType: fanout
+              queueNameGroupOnly: true
 
           subscribeUserDeletionRequested:
             consumer:
@@ -76,6 +78,7 @@ spring:
               dlqExpires: ${rabbitmq_dlqExpires:1000}
               prefetch: ${rabbitmq_prefetch:1}
               exchangeType: fanout
+              queueNameGroupOnly: true
 
           publishUserCreated:
             producer:
