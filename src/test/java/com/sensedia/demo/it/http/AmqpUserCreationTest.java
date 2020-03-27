@@ -4,9 +4,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.sensedia.commons.errors.domains.DefaultErrorResponse;
 import com.sensedia.demo.adapters.dtos.UserCreationDto;
 import com.sensedia.demo.adapters.dtos.UserResponseDto;
+import com.sensedia.demo.commons.BrokerResponse;
 import com.sensedia.demo.domains.User;
 import com.sensedia.demo.domains.UserStatus;
-import com.sensedia.demo.commons.BrokerResponse;
 import org.junit.jupiter.api.*;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -99,6 +99,9 @@ public class AmqpUserCreationTest extends AbstractUserTest {
 
     // REPOSITORY VALIDATION
     assertThat(repository.findAll()).hasSize(0);
+
+    // NOTIFICATION VALIDATION
+    assertThat(collector.forChannel(brokerOutput.publishUserCreated())).isNull();
   }
 
   @Test
@@ -131,6 +134,9 @@ public class AmqpUserCreationTest extends AbstractUserTest {
 
     // REPOSITORY VALIDATION
     assertThat(repository.findAll()).hasSize(0);
+
+    // NOTIFICATION VALIDATION
+    assertThat(collector.forChannel(brokerOutput.publishUserCreated())).isNull();
   }
 
   @Test
@@ -164,5 +170,8 @@ public class AmqpUserCreationTest extends AbstractUserTest {
 
     // REPOSITORY VALIDATION
     assertThat(repository.findAll()).hasSize(0);
+
+    // NOTIFICATION VALIDATION
+    assertThat(collector.forChannel(brokerOutput.publishUserCreated())).isNull();
   }
 }
