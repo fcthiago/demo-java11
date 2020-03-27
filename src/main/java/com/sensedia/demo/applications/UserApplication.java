@@ -1,6 +1,6 @@
 package com.sensedia.demo.applications;
 
-import com.sensedia.commons.exceptions.NotFoundException;
+import com.sensedia.commons.errors.exceptions.NotFoundException;
 import com.sensedia.demo.domains.User;
 import com.sensedia.demo.domains.UserStatus;
 import com.sensedia.demo.domains.search.UserSearch;

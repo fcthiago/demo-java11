@@ -1,11 +1,9 @@
 package com.sensedia.demo.it.http;
 
-import com.sensedia.commons.exceptions.DefaultErrorResponse;
+import com.sensedia.commons.errors.domains.DefaultErrorResponse;
 import com.sensedia.demo.adapters.dtos.UserResponseDto;
 import com.sensedia.demo.domains.UserStatus;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.http.HttpEntity;
@@ -18,6 +16,7 @@ import java.io.IOException;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@TestMethodOrder(MethodOrderer.Alphanumeric.class)
 public class HttpUserGetTest extends AbstractUserTest {
 
   @BeforeEach

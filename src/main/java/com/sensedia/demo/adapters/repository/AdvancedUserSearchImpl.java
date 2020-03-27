@@ -1,6 +1,6 @@
 package com.sensedia.demo.adapters.repository;
 
-import com.sensedia.commons.exceptions.PreConditionException;
+import com.sensedia.commons.errors.exceptions.PreConditionException;
 import com.sensedia.demo.domains.User;
 import com.sensedia.demo.domains.search.UserSearch;
 import com.sensedia.demo.domains.search.UserSearchResponse;

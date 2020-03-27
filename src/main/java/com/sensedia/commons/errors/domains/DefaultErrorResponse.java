@@ -1,17 +1,20 @@
-package com.sensedia.commons.exceptions;
+package com.sensedia.commons.errors.domains;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.springframework.http.HttpStatus;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-public class DefaultErrorResponse {
+public class DefaultErrorResponse<T> {
 
   public static final String GATEWAY_TIMEOUT =
       "O servidor encontrou um erro temporário e não completou a requisição.";
@@ -57,6 +60,7 @@ public class DefaultErrorResponse {
   private String title;
   private String detail;
   private HttpStatus status;
+  private T originalMessage;
 
   public DefaultErrorResponse(int statusCode) {
     this(HttpStatus.valueOf(statusCode), null);
@@ -123,8 +127,30 @@ public class DefaultErrorResponse {
     return status.value();
   }
 
+  @SuppressWarnings("unchecked")
+  public DefaultErrorResponse addOriginalMessage(Object originalMessage) {
+    this.originalMessage = (T) originalMessage;
+    return this;
+  }
+
+
+  public T getOriginalMessage() {
+    return originalMessage;
+  }
+
   @JsonIgnore
   public HttpStatus getHttpStatus() {
     return status;
+  }
+
+  @Override
+  public String toString() {
+    return new ToStringBuilder(this)
+        .append("type", type)
+        .append("title", title)
+        .append("detail", detail)
+        .append("status", status)
+        .append("originalMessage", originalMessage)
+        .toString();
   }
 }

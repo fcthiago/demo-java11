@@ -1,20 +1,17 @@
 package com.sensedia.demo.it.http;
 
-import com.sensedia.commons.exceptions.DefaultErrorResponse;
+import com.sensedia.commons.errors.domains.DefaultErrorResponse;
 import com.sensedia.demo.adapters.dtos.UserResponseDto;
 import com.sensedia.demo.domains.User;
 import com.sensedia.demo.domains.UserStatus;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import com.sensedia.demo.utils.BrokerResponse;
+import org.junit.jupiter.api.*;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.Message;
-import org.springframework.messaging.MessageHeaders;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -22,6 +19,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@TestMethodOrder(MethodOrderer.Alphanumeric.class)
 public class HttpUserDeletionTest extends AbstractUserTest {
 
   @BeforeEach
@@ -47,11 +45,9 @@ public class HttpUserDeletionTest extends AbstractUserTest {
     assertThat(user.isEmpty()).isTrue();
 
     // NOTIFICATION VALIDATION
-    Message<?> poll = collector.forChannel(output.publishDeletedUser()).poll();
-    Object payload = poll.getPayload();
-    MessageHeaders headers = poll.getHeaders();
+    BrokerResponse brokerResponse = collector.forChannel(brokerOutput.publishUserDeleted());
 
-    UserResponseDto userResponse = mapper.readValue(payload.toString(), UserResponseDto.class);
+    UserResponseDto userResponse = brokerResponse.getPayload(UserResponseDto.class);
 
     assertThat(isUUID(userResponse.getId())).isTrue();
     assertThat(userResponse.getEmail()).isEqualTo("usuario03@sensedia.com");
@@ -59,7 +55,7 @@ public class HttpUserDeletionTest extends AbstractUserTest {
     assertThat(userResponse.getStatus()).isEqualTo(UserStatus.ACTIVE.toString());
     assertThat(userResponse.getCreationDate()).isNotNull();
 
-    assertThat(headers.get("event_name")).isEqualTo("UserDeletion");
+    assertThat(brokerResponse.getHeaders().get("event_name")).isEqualTo("UserDeletion");
   }
 
   @Test
@@ -84,6 +80,6 @@ public class HttpUserDeletionTest extends AbstractUserTest {
     assertThat(repository.findAll()).hasSize(5);
 
     // NOTIFICATION VALIDATION
-    assertThat(collector.forChannel(output.publishCreatedUser()).poll()).isNull();
+    assertThat(collector.forChannel(brokerOutput.publishUserDeleted())).isNull();
   }
 }

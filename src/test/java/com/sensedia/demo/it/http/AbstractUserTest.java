@@ -3,15 +3,16 @@ package com.sensedia.demo.it.http;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.MongoTimeoutException;
+import com.sensedia.demo.adapters.amqp.config.BrokerInput;
 import com.sensedia.demo.adapters.amqp.config.BrokerOutput;
 import com.sensedia.demo.applications.UserApplication;
 import com.sensedia.demo.domains.User;
 import com.sensedia.demo.ports.RepositoryPort;
+import com.sensedia.demo.utils.MessageCollectorCustom;
 import io.micrometer.core.instrument.util.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.cloud.stream.test.binder.MessageCollector;
 import org.springframework.core.io.Resource;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -35,9 +36,11 @@ public abstract class AbstractUserTest {
 
   @Autowired TestRestTemplate request;
 
-  @Autowired MessageCollector collector;
+  @Autowired MessageCollectorCustom collector;
 
-  @Autowired BrokerOutput output;
+  @Autowired BrokerOutput brokerOutput;
+
+  @Autowired BrokerInput brokerInput;
 
   @Autowired private UserApplication userApplication;
 

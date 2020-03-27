@@ -1,6 +1,6 @@
 package com.sensedia.demo.domains.search;
 
-import com.sensedia.commons.exceptions.BadRequestException;
+import com.sensedia.commons.errors.exceptions.BadRequestException;
 import org.apache.commons.lang3.StringUtils;
 
 public enum SortType {

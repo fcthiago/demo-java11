@@ -3,7 +3,6 @@ server:
 
 spring:
   main:
-    lazy-initialization: ${lazy_initialization:true}
     banner-mode: "off"
   application:
     name: ${name:demo}
@@ -15,17 +14,76 @@ spring:
   cloud:
     stream:
       bindings:
-        publishCreatedUser:
-          destination: x-created-user
-        publishDeletedUser:
-          destination: x-deleted-user
+        subscribeUserCreationRequested:
+          destination: x-user-creation-requested
+          group: q-demo
+          consumer:
+            maxAttempts: 1
+        subscribeUserUpdateRequested:
+          destination: x-user-update-requested
+          group: q-demo
+          consumer:
+            maxAttempts: 1
+        subscribeUserDeletionRequested:
+          destination: x-user-deletion-requested
+          group: q-demo
+          consumer:
+            maxAttempts: 1
+
+        publishUserCreated:
+          destination: x-user-created
+        publishUserDeleted:
+          destination: x-user-deleted
+        publishUserOperationError:
+          destination: x-user-operation-error
 
       rabbit:
         bindings:
-          publishCreatedUser:
+          subscribeUserCreationRequested:
+            consumer:
+              ttl: ${rabbitmq_ttlInMilliseconds:3600000}
+              autoBindDlq: true
+              republishToDlq: true
+              requeueRejected: false
+              deadLetterExchange: x-user-operation-error
+              deadLetterExchangeType: fanout
+              dlqExpires: ${rabbitmq_dlqExpires:1000}
+              prefetch: ${rabbitmq_prefetch:1}
+              exchangeType: fanout
+
+          subscribeUserUpdateRequested:
+            consumer:
+              ttl: ${rabbitmq_ttlInMilliseconds:3600000}
+              autoBindDlq: true
+              republishToDlq: true
+              requeueRejected: false
+              deadLetterExchange: x-user-operation-error
+              deadLetterExchangeType: fanout
+              dlqExpires: ${rabbitmq_dlqExpires:1000}
+              prefetch: ${rabbitmq_prefetch:1}
+              exchangeType: fanout
+
+          subscribeUserDeletionRequested:
+            consumer:
+              ttl: ${rabbitmq_ttlInMilliseconds:3600000}
+              autoBindDlq: true
+              republishToDlq: true
+              requeueRejected: false
+              deadLetterExchange: x-user-operation-error
+              deadLetterExchangeType: fanout
+              dlqExpires: ${rabbitmq_dlqExpires:1000}
+              prefetch: ${rabbitmq_prefetch:1}
+              exchangeType: fanout
+
+          publishUserCreated:
             producer:
               exchangeType: fanout
-          publishDeletedUser:
+
+          publishUserDeleted:
+            producer:
+              exchangeType: fanout
+
+          publishUserOperationError:
             producer:
               exchangeType: fanout
 

@@ -7,9 +7,12 @@ import org.springframework.stereotype.Component;
 @Component
 public interface BrokerOutput {
 
-  @Output("publishCreatedUser")
-  MessageChannel publishCreatedUser();
+  @Output(BindConfig.PUBLISH_USER_CREATED)
+  MessageChannel publishUserCreated();
 
-  @Output("publishDeletedUser")
-  MessageChannel publishDeletedUser();
+  @Output(BindConfig.PUBLISH_USER_DELETED)
+  MessageChannel publishUserDeleted();
+
+  @Output(BindConfig.PUBLISH_USER_OPERATION_ERROR)
+  MessageChannel publishUserOperationError();
 }

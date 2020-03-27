@@ -8,6 +8,7 @@ import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
+import java.util.Objects;
 
 @Validated
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -32,6 +33,19 @@ public class UserCreationDto {
 
   public void setEmail(String email) {
     this.email = email;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    UserCreationDto that = (UserCreationDto) o;
+    return Objects.equals(name, that.name) && Objects.equals(email, that.email);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(name, email);
   }
 
   @Override

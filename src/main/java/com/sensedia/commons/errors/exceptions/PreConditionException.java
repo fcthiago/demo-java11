@@ -1,4 +1,4 @@
-package com.sensedia.commons.exceptions;
+package com.sensedia.commons.errors.exceptions;
 
 import org.springframework.http.HttpStatus;
 

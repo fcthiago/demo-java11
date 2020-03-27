@@ -1,27 +1,25 @@
 package com.sensedia.demo.it.http;
 
-import com.sensedia.commons.exceptions.DefaultErrorResponse;
+import com.sensedia.commons.errors.domains.DefaultErrorResponse;
 import com.sensedia.demo.adapters.dtos.UserCreationDto;
 import com.sensedia.demo.adapters.dtos.UserResponseDto;
 import com.sensedia.demo.domains.User;
 import com.sensedia.demo.domains.UserStatus;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import com.sensedia.demo.utils.BrokerResponse;
+import org.junit.jupiter.api.*;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.Message;
-import org.springframework.messaging.MessageHeaders;
 
 import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@TestMethodOrder(MethodOrderer.Alphanumeric.class)
 public class HttpUserCreationTest extends AbstractUserTest {
 
   @BeforeEach
@@ -62,11 +60,9 @@ public class HttpUserCreationTest extends AbstractUserTest {
     assertThat(user.getCreationDate()).isNotNull();
 
     // NOTIFICATION VALIDATION
-    Message<?> poll = collector.forChannel(output.publishCreatedUser()).poll();
-    Object payload = poll.getPayload();
-    MessageHeaders headers = poll.getHeaders();
+    BrokerResponse brokerResponse = collector.forChannel(brokerOutput.publishUserCreated());
 
-    userResponse = mapper.readValue(payload.toString(), UserResponseDto.class);
+    userResponse = brokerResponse.getPayload(UserResponseDto.class);
 
     assertThat(isUUID(userResponse.getId())).isTrue();
     assertThat(userResponse.getEmail()).isEqualTo("thiago.costa@sensedia.com");
@@ -74,7 +70,7 @@ public class HttpUserCreationTest extends AbstractUserTest {
     assertThat(userResponse.getStatus()).isEqualTo(UserStatus.ACTIVE.toString());
     assertThat(userResponse.getCreationDate()).isNotNull();
 
-    assertThat(headers.get("event_name")).isEqualTo("UserCreation");
+    assertThat(brokerResponse.getHeaders().get("event_name")).isEqualTo("UserCreation");
   }
 
   @Test
@@ -96,7 +92,7 @@ public class HttpUserCreationTest extends AbstractUserTest {
     assertThat(response.getBody().getType()).isNull();
 
     assertThat(repository.findAll()).hasSize(0);
-    assertThat(collector.forChannel(output.publishCreatedUser()).poll()).isNull();
+    assertThat(collector.forChannel(brokerOutput.publishUserCreated())).isNull();
   }
 
   @Test
@@ -118,7 +114,7 @@ public class HttpUserCreationTest extends AbstractUserTest {
     assertThat(response.getBody().getType()).isNull();
 
     assertThat(repository.findAll()).hasSize(0);
-    assertThat(collector.forChannel(output.publishCreatedUser()).poll()).isNull();
+    assertThat(collector.forChannel(brokerOutput.publishUserCreated())).isNull();
   }
 
   @Test
@@ -140,7 +136,6 @@ public class HttpUserCreationTest extends AbstractUserTest {
     assertThat(response.getBody().getType()).isNull();
 
     assertThat(repository.findAll()).hasSize(0);
-    assertThat(collector.forChannel(output.publishCreatedUser()).poll()).isNull();
+    assertThat(collector.forChannel(brokerOutput.publishUserCreated())).isNull();
   }
-
 }
