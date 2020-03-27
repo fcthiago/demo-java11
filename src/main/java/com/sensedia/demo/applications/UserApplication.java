@@ -51,15 +51,32 @@ public class UserApplication implements ApplicationPort {
   }
 
   @Override
+  public User update(@Valid @NotNull User userForUpdate, String id) {
+    User user = findById(id);
+
+    user.setName(userForUpdate.getName());
+    user.setEmail(userForUpdate.getEmail());
+
+    if (userForUpdate.getStatus() != null) user.setStatus(userForUpdate.getStatus());
+
+    repository.save(user);
+    amqpPort.notifyUserUpdate(user);
+
+    return user;
+  }
+
+  @Override
   public User findById(@NotNull String id) {
-    return repository.findById(id).orElseGet(() -> {
-      throw new NotFoundException("User not found");
-    });
+    return repository
+        .findById(id)
+        .orElseGet(
+            () -> {
+              throw new NotFoundException("User not found");
+            });
   }
 
   @Override
   public UserSearchResponse findAll(@Valid @NotNull UserSearch userSearch) {
     return repository.findAll(userSearch);
   }
-
 }

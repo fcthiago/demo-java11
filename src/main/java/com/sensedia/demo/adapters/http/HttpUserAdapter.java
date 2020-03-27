@@ -1,8 +1,9 @@
 package com.sensedia.demo.adapters.http;
 
+import com.sensedia.commons.converters.InstantConverter;
 import com.sensedia.demo.adapters.dtos.UserCreationDto;
 import com.sensedia.demo.adapters.dtos.UserResponseDto;
-import com.sensedia.commons.converters.InstantConverter;
+import com.sensedia.demo.adapters.dtos.UserUpdateDto;
 import com.sensedia.demo.adapters.mappers.UserMapper;
 import com.sensedia.demo.domains.User;
 import com.sensedia.demo.domains.search.UserSearch;
@@ -14,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 import static com.sensedia.commons.headers.DefaultHeader.HEADER_ACCEPT_RANGE;
@@ -30,7 +32,7 @@ public class HttpUserAdapter {
 
   @Autowired
   public HttpUserAdapter(
-          ApplicationPort userApplication, UserMapper userMapper, InstantConverter instantConverter) {
+      ApplicationPort userApplication, UserMapper userMapper, InstantConverter instantConverter) {
     this.userApplication = userApplication;
     this.userMapper = userMapper;
     this.instantConverter = instantConverter;
@@ -49,6 +51,16 @@ public class HttpUserAdapter {
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void delete(@PathVariable String id) {
     userApplication.delete(id);
+  }
+
+  @PutMapping("/{id}")
+  public ResponseEntity<UserResponseDto> update(
+      @PathVariable String id, @Valid @RequestBody UserUpdateDto userUpdateDto) {
+    User user = userApplication.update(userMapper.toUser(userUpdateDto), id);
+
+    UserResponseDto userResponseDto = userMapper.toUserResponseDto(user);
+
+    return ResponseEntity.ok(userResponseDto);
   }
 
   @GetMapping("/{id}")

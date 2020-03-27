@@ -10,4 +10,6 @@ public interface AmqpPort {
   void notifyUserDeletion(User user);
 
   void notifyUserOperationError(DefaultErrorResponse errorResponse);
+
+  void notifyUserUpdate(User user);
 }

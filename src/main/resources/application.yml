@@ -16,12 +16,12 @@ spring:
       bindings:
         subscribeUserCreationRequested:
           destination: x-user-creation-requested
-          group: q-demo
+          group: demo
           consumer:
             maxAttempts: 1
         subscribeUserUpdateRequested:
           destination: x-user-update-requested
-          group: q-demo
+          group: demo
           consumer:
             maxAttempts: 1
         subscribeUserDeletionRequested:
@@ -34,6 +34,8 @@ spring:
           destination: x-user-created
         publishUserDeleted:
           destination: x-user-deleted
+        publishUserUpdate:
+          destination: x-user-update
         publishUserOperationError:
           destination: x-user-operation-error
 
@@ -80,6 +82,10 @@ spring:
               exchangeType: fanout
 
           publishUserDeleted:
+            producer:
+              exchangeType: fanout
+
+          publishUserUpdate:
             producer:
               exchangeType: fanout
 

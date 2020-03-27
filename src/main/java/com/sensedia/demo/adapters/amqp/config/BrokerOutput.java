@@ -10,6 +10,9 @@ public interface BrokerOutput {
   @Output(BindConfig.PUBLISH_USER_CREATED)
   MessageChannel publishUserCreated();
 
+  @Output(BindConfig.PUBLISH_USER_UPDATED)
+  MessageChannel publishUserUpdated();
+
   @Output(BindConfig.PUBLISH_USER_DELETED)
   MessageChannel publishUserDeleted();
 

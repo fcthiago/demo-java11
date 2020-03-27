@@ -12,6 +12,8 @@ public interface ApplicationPort {
 
   void delete(@NotNull String id);
 
+  User update(@Valid @NotNull User user, String id);
+
   User findById(@NotNull String id);
 
   UserSearchResponse findAll(@Valid @NotNull UserSearch userSearch);

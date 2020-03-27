@@ -43,6 +43,11 @@ public class AmqpUserAdapterOutbound implements AmqpPort {
   }
 
   @Override
+  public void notifyUserUpdate(User user) {
+    sendMessage(output.publishUserUpdated(), user, USER_UPDATE_EVENT_NAME);
+  }
+
+  @Override
   public void notifyUserOperationError(DefaultErrorResponse errorResponse) {
     sendMessage(output.publishUserOperationError(), errorResponse, USER_OPERATION_ERROR_EVENT_NAME);
   }

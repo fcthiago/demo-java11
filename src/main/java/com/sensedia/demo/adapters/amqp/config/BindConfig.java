@@ -8,6 +8,7 @@ public class BindConfig {
   public static final String PUBLISH_USER_DELETED = "publishUserDeleted";
   public static final String PUBLISH_USER_CREATED = "publishUserCreated";
   public static final String PUBLISH_USER_OPERATION_ERROR = "publishUserOperationError";
+  public static final String PUBLISH_USER_UPDATED = "publishUserUpdated";
 
   private BindConfig() {}
 }
