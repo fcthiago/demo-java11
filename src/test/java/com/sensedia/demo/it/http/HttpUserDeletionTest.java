@@ -1,7 +1,7 @@
 package com.sensedia.demo.it.http;
 
 import com.sensedia.commons.errors.domains.DefaultErrorResponse;
-import com.sensedia.demo.adapters.dtos.UserResponseDto;
+import com.sensedia.demo.adapters.dtos.UserDto;
 import com.sensedia.demo.domains.User;
 import com.sensedia.demo.domains.UserStatus;
 import com.sensedia.demo.commons.BrokerResponse;
@@ -47,7 +47,7 @@ public class HttpUserDeletionTest extends AbstractUserTest {
     // NOTIFICATION VALIDATION
     BrokerResponse brokerResponse = collector.forChannel(brokerOutput.publishUserDeleted());
 
-    UserResponseDto userResponse = brokerResponse.getPayload(UserResponseDto.class);
+    UserDto userResponse = brokerResponse.getPayload(UserDto.class);
 
     assertThat(isUUID(userResponse.getId())).isTrue();
     assertThat(userResponse.getEmail()).isEqualTo("usuario03@sensedia.com");

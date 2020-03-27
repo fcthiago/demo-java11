@@ -1,7 +1,7 @@
 package com.sensedia.demo.it.http;
 
 import com.sensedia.commons.errors.domains.DefaultErrorResponse;
-import com.sensedia.demo.adapters.dtos.UserResponseDto;
+import com.sensedia.demo.adapters.dtos.UserDto;
 import com.sensedia.demo.domains.UserStatus;
 import org.junit.jupiter.api.*;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,15 +27,15 @@ public class HttpUserGetTest extends AbstractUserTest {
 
   @Test
   @DisplayName("I want to get a user with success")
-  public void getUserSuccessfully() throws IOException {
-    ResponseEntity<UserResponseDto> response =
+  public void getUserSuccessfully() {
+    ResponseEntity<UserDto> response =
         request.exchange(
-            "/users/{id}", HttpMethod.GET, HttpEntity.EMPTY, UserResponseDto.class, USER_ID_VALID);
+            "/users/{id}", HttpMethod.GET, HttpEntity.EMPTY, UserDto.class, USER_ID_VALID);
 
     // RESPONSE VALIDATION
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-    UserResponseDto userResponse = response.getBody();
+    UserDto userResponse = response.getBody();
 
     assertThat(userResponse.getId()).isEqualTo(USER_ID_VALID);
     assertThat(userResponse.getEmail()).isEqualTo("usuario03@sensedia.com");

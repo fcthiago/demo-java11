@@ -51,7 +51,7 @@ public class UserApplication implements ApplicationPort {
   }
 
   @Override
-  public User update(@Valid @NotNull User userForUpdate, String id) {
+  public User update(@Valid @NotNull User userForUpdate, @NotNull String id) {
     User user = findById(id);
 
     user.setName(userForUpdate.getName());

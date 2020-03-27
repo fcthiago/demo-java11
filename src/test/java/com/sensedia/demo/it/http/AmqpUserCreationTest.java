@@ -3,7 +3,7 @@ package com.sensedia.demo.it.http;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.sensedia.commons.errors.domains.DefaultErrorResponse;
 import com.sensedia.demo.adapters.dtos.UserCreationDto;
-import com.sensedia.demo.adapters.dtos.UserResponseDto;
+import com.sensedia.demo.adapters.dtos.UserDto;
 import com.sensedia.demo.commons.BrokerResponse;
 import com.sensedia.demo.domains.User;
 import com.sensedia.demo.domains.UserStatus;
@@ -55,7 +55,7 @@ public class AmqpUserCreationTest extends AbstractUserTest {
     // NOTIFICATION VALIDATION
     BrokerResponse brokerResponse = collector.forChannel(brokerOutput.publishUserCreated());
 
-    UserResponseDto userResponse = brokerResponse.getPayload(UserResponseDto.class);
+    UserDto userResponse = brokerResponse.getPayload(UserDto.class);
 
     assertThat(isUUID(userResponse.getId())).isTrue();
     assertThat(userResponse.getEmail()).isEqualTo("thiago.costa@sensedia.com");
@@ -84,9 +84,9 @@ public class AmqpUserCreationTest extends AbstractUserTest {
     BrokerResponse brokerResponse = collector.forChannel(brokerOutput.publishUserOperationError());
 
     DefaultErrorResponse<UserCreationDto> response =
-        brokerResponse.getPayload(new TypeReference<DefaultErrorResponse<UserCreationDto>>() {});
+        brokerResponse.getPayload(new TypeReference<>() {});
 
-    assertThat((UserCreationDto) response.getOriginalMessage()).isEqualTo(userCreation);
+    assertThat(response.getOriginalMessage()).isEqualTo(userCreation);
     assertThat(response.getStatus()).isEqualTo(BAD_REQUEST.value());
     assertThat(response.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
     assertThat(response.getDetail()).isEqualTo("email é obrigatório ou está no formato inválido.");
@@ -119,9 +119,9 @@ public class AmqpUserCreationTest extends AbstractUserTest {
     BrokerResponse brokerResponse = collector.forChannel(brokerOutput.publishUserOperationError());
 
     DefaultErrorResponse<UserCreationDto> response =
-        brokerResponse.getPayload(new TypeReference<DefaultErrorResponse<UserCreationDto>>() {});
+        brokerResponse.getPayload(new TypeReference<>() {});
 
-    assertThat((UserCreationDto) response.getOriginalMessage()).isEqualTo(userCreation);
+    assertThat(response.getOriginalMessage()).isEqualTo(userCreation);
     assertThat(response.getStatus()).isEqualTo(BAD_REQUEST.value());
     assertThat(response.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
     assertThat(response.getDetail()).isEqualTo("name é obrigatório ou está no formato inválido.");
@@ -155,7 +155,7 @@ public class AmqpUserCreationTest extends AbstractUserTest {
     BrokerResponse brokerResponse = collector.forChannel(brokerOutput.publishUserOperationError());
 
     DefaultErrorResponse<UserCreationDto> response =
-        brokerResponse.getPayload(new TypeReference<DefaultErrorResponse<UserCreationDto>>() {});
+        brokerResponse.getPayload(new TypeReference<>() {});
 
     assertThat(response.getOriginalMessage()).isEqualTo(userCreation);
     assertThat(response.getStatus()).isEqualTo(BAD_REQUEST.value());

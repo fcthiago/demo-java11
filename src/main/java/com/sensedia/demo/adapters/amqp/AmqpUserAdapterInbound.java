@@ -1,10 +1,12 @@
 package com.sensedia.demo.adapters.amqp;
 
+import com.sensedia.commons.beans.BeanValidator;
 import com.sensedia.commons.errors.resolvers.ExceptionResolver;
 import com.sensedia.demo.adapters.amqp.config.BindConfig;
 import com.sensedia.demo.adapters.amqp.config.BrokerInput;
 import com.sensedia.demo.adapters.dtos.UserCreationDto;
 import com.sensedia.demo.adapters.dtos.UserDeletionDto;
+import com.sensedia.demo.adapters.dtos.UserUpdateDto;
 import com.sensedia.demo.adapters.mappers.UserMapper;
 import com.sensedia.demo.domains.User;
 import com.sensedia.demo.ports.AmqpPort;
@@ -49,6 +51,20 @@ public class AmqpUserAdapterInbound {
     } catch (Exception e) {
       amqpPort.notifyUserOperationError(
           exceptionResolver.solve(e).addOriginalMessage(userDeletionDto));
+    }
+  }
+
+  @StreamListener(target = BindConfig.SUBSCRIBE_USER_UPDATE_REQUESTED)
+  public void subscribeExchangeUserUpdateRequested(UserUpdateDto userUpdateDto) {
+    try {
+      BeanValidator.validate(userUpdateDto);
+
+      User user = userMapper.toUser(userUpdateDto);
+
+      applicationPort.update(user, userUpdateDto.getId());
+    } catch (Exception e) {
+      amqpPort.notifyUserOperationError(
+          exceptionResolver.solve(e).addOriginalMessage(userUpdateDto));
     }
   }
 }

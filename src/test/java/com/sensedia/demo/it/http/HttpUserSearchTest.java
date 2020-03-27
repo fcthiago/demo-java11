@@ -1,7 +1,7 @@
 package com.sensedia.demo.it.http;
 
 import com.sensedia.commons.errors.domains.DefaultErrorResponse;
-import com.sensedia.demo.adapters.dtos.UserResponseDto;
+import com.sensedia.demo.adapters.dtos.UserDto;
 import com.sensedia.demo.domains.UserStatus;
 import org.junit.jupiter.api.*;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -32,12 +32,12 @@ public class HttpUserSearchTest extends AbstractUserTest {
   @Test
   @DisplayName("I want to search for a user with an empty result list")
   public void searchUserWithEmptyResultList() {
-    ResponseEntity<UserResponseDto[]> response =
+    ResponseEntity<UserDto[]> response =
         request.exchange(
             "/users?page=1&limit=3&name=asdf",
             HttpMethod.GET,
             HttpEntity.EMPTY,
-            UserResponseDto[].class);
+            UserDto[].class);
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
@@ -50,24 +50,24 @@ public class HttpUserSearchTest extends AbstractUserTest {
   @Test
   @DisplayName("I want to search for a user by name")
   public void searchUserByName() {
-    ResponseEntity<UserResponseDto[]> response =
+    ResponseEntity<UserDto[]> response =
         request.exchange(
             "/users?page=1&limit=3&name=Usuário 01",
             HttpMethod.GET,
             HttpEntity.EMPTY,
-            UserResponseDto[].class);
+            UserDto[].class);
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
     assertThat(response.getBody()).hasSize(1);
 
-    UserResponseDto userResponseDto = response.getBody()[0];
+    UserDto userDto = response.getBody()[0];
 
-    assertThat(userResponseDto.getId()).isEqualTo("887816e0-59fc-4dd3-a1dc-40f70fe1c650");
-    assertThat(userResponseDto.getName()).isEqualTo("Usuário 01");
-    assertThat(userResponseDto.getEmail()).isEqualTo("usuario01@sensedia.com");
-    assertThat(userResponseDto.getStatus()).isEqualTo(UserStatus.ACTIVE.name());
-    assertThat(userResponseDto.getCreationDate())
+    assertThat(userDto.getId()).isEqualTo("887816e0-59fc-4dd3-a1dc-40f70fe1c650");
+    assertThat(userDto.getName()).isEqualTo("Usuário 01");
+    assertThat(userDto.getEmail()).isEqualTo("usuario01@sensedia.com");
+    assertThat(userDto.getStatus()).isEqualTo(UserStatus.ACTIVE.name());
+    assertThat(userDto.getCreationDate())
         .isEqualTo(Instant.parse("2020-03-21T16:07:44.260Z"));
 
     assertThat(response.getHeaders().get(HEADER_CONTENT_RANGE).get(0)).isEqualTo("1");
@@ -77,12 +77,12 @@ public class HttpUserSearchTest extends AbstractUserTest {
   @Test
   @DisplayName("I want to search for a user by the first letters of the name")
   public void searchUserByFirstLettersOfTheName() {
-    ResponseEntity<UserResponseDto[]> response =
+    ResponseEntity<UserDto[]> response =
         request.exchange(
             "/users?page=1&limit=3&name=Usuário",
             HttpMethod.GET,
             HttpEntity.EMPTY,
-            UserResponseDto[].class);
+            UserDto[].class);
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
@@ -99,12 +99,12 @@ public class HttpUserSearchTest extends AbstractUserTest {
   @Test
   @DisplayName("I want to search for a user by email")
   public void searchUserByEmail() {
-    ResponseEntity<UserResponseDto[]> response =
+    ResponseEntity<UserDto[]> response =
         request.exchange(
             "/users?page=1&limit=3&email=usuario01@sensedia.com",
             HttpMethod.GET,
             HttpEntity.EMPTY,
-            UserResponseDto[].class);
+            UserDto[].class);
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
@@ -119,12 +119,12 @@ public class HttpUserSearchTest extends AbstractUserTest {
   @Test
   @DisplayName("I want to search for a user by the first letters of the email")
   public void searchUserByFirstLettersOfTheEmail() {
-    ResponseEntity<UserResponseDto[]> response =
+    ResponseEntity<UserDto[]> response =
         request.exchange(
             "/users?page=1&limit=3&email=usuario",
             HttpMethod.GET,
             HttpEntity.EMPTY,
-            UserResponseDto[].class);
+            UserDto[].class);
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
@@ -141,12 +141,12 @@ public class HttpUserSearchTest extends AbstractUserTest {
   @Test
   @DisplayName("I want to search for a user by status")
   public void searchUserByStatus() {
-    ResponseEntity<UserResponseDto[]> response =
+    ResponseEntity<UserDto[]> response =
         request.exchange(
             "/users?page=1&limit=3&status=ACTIVE",
             HttpMethod.GET,
             HttpEntity.EMPTY,
-            UserResponseDto[].class);
+            UserDto[].class);
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
@@ -183,12 +183,12 @@ public class HttpUserSearchTest extends AbstractUserTest {
   @Test
   @DisplayName("I want to search for a user by creation date")
   public void searchUserByCreationDate() {
-    ResponseEntity<UserResponseDto[]> response =
+    ResponseEntity<UserDto[]> response =
         request.exchange(
             "/users?page=1&limit=3&creation_date_start=2020-03-21&creation_date_end=2020-03-23",
             HttpMethod.GET,
             HttpEntity.EMPTY,
-            UserResponseDto[].class);
+            UserDto[].class);
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
@@ -224,16 +224,16 @@ public class HttpUserSearchTest extends AbstractUserTest {
   @Test
   @DisplayName("I want to search for a user sorting by name")
   public void searchUserSortingByName() {
-    ResponseEntity<UserResponseDto[]> response =
+    ResponseEntity<UserDto[]> response =
         request.exchange(
             "/users?page=1&limit=3&sort=name",
             HttpMethod.GET,
             HttpEntity.EMPTY,
-            UserResponseDto[].class);
+            UserDto[].class);
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-    UserResponseDto[] usersResponse = response.getBody();
+    UserDto[] usersResponse = response.getBody();
 
     assertThat(usersResponse).hasSize(3);
 
@@ -252,16 +252,16 @@ public class HttpUserSearchTest extends AbstractUserTest {
   @Test
   @DisplayName("I want to search for a user sorting by email")
   public void searchUserSortingByEmail() {
-    ResponseEntity<UserResponseDto[]> response =
+    ResponseEntity<UserDto[]> response =
         request.exchange(
             "/users?page=1&limit=3&sort=email",
             HttpMethod.GET,
             HttpEntity.EMPTY,
-            UserResponseDto[].class);
+            UserDto[].class);
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-    UserResponseDto[] usersResponse = response.getBody();
+    UserDto[] usersResponse = response.getBody();
 
     assertThat(usersResponse).hasSize(3);
 
@@ -276,16 +276,16 @@ public class HttpUserSearchTest extends AbstractUserTest {
   @Test
   @DisplayName("I want to search for a user sorting by status")
   public void searchUserSortingByStatus() {
-    ResponseEntity<UserResponseDto[]> response =
+    ResponseEntity<UserDto[]> response =
         request.exchange(
             "/users?page=1&limit=3&sort=status",
             HttpMethod.GET,
             HttpEntity.EMPTY,
-            UserResponseDto[].class);
+            UserDto[].class);
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-    UserResponseDto[] usersResponse = response.getBody();
+    UserDto[] usersResponse = response.getBody();
 
     assertThat(usersResponse).hasSize(3);
 
@@ -300,16 +300,16 @@ public class HttpUserSearchTest extends AbstractUserTest {
   @Test
   @DisplayName("I want to search for a user sorting by creation date")
   public void searchUserSortingByCreationDate() {
-    ResponseEntity<UserResponseDto[]> response =
+    ResponseEntity<UserDto[]> response =
         request.exchange(
             "/users?page=1&limit=3&sort=creation_date",
             HttpMethod.GET,
             HttpEntity.EMPTY,
-            UserResponseDto[].class);
+            UserDto[].class);
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-    UserResponseDto[] usersResponse = response.getBody();
+    UserDto[] usersResponse = response.getBody();
 
     assertThat(usersResponse).hasSize(3);
 
@@ -344,16 +344,16 @@ public class HttpUserSearchTest extends AbstractUserTest {
   @Test
   @DisplayName("I want to search for a user in descending order")
   public void searchUserDescendingOrder() {
-    ResponseEntity<UserResponseDto[]> response =
+    ResponseEntity<UserDto[]> response =
         request.exchange(
             "/users?page=1&limit=3&sort=name&sort_type=desc",
             HttpMethod.GET,
             HttpEntity.EMPTY,
-            UserResponseDto[].class);
+            UserDto[].class);
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-    UserResponseDto[] usersResponse = response.getBody();
+    UserDto[] usersResponse = response.getBody();
 
     assertThat(usersResponse).hasSize(3);
 
@@ -368,16 +368,16 @@ public class HttpUserSearchTest extends AbstractUserTest {
   @Test
   @DisplayName("I want to search for a user in ascending order")
   public void searchUserAscendingOrder() {
-    ResponseEntity<UserResponseDto[]> response =
+    ResponseEntity<UserDto[]> response =
         request.exchange(
             "/users?page=1&limit=3&sort=name&order_type=asc",
             HttpMethod.GET,
             HttpEntity.EMPTY,
-            UserResponseDto[].class);
+            UserDto[].class);
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-    UserResponseDto[] usersResponse = response.getBody();
+    UserDto[] usersResponse = response.getBody();
 
     assertThat(usersResponse).hasSize(3);
 
@@ -412,13 +412,13 @@ public class HttpUserSearchTest extends AbstractUserTest {
   @Test
   @DisplayName("I want to search for a user on page two")
   public void searchUserOnPageTwo() {
-    ResponseEntity<UserResponseDto[]> response =
+    ResponseEntity<UserDto[]> response =
         request.exchange(
-            "/users?page=2&limit=3", HttpMethod.GET, HttpEntity.EMPTY, UserResponseDto[].class);
+            "/users?page=2&limit=3", HttpMethod.GET, HttpEntity.EMPTY, UserDto[].class);
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-    UserResponseDto[] usersResponse = response.getBody();
+    UserDto[] usersResponse = response.getBody();
 
     assertThat(usersResponse).hasSize(2);
 

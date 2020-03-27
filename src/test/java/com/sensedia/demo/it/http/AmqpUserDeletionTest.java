@@ -2,19 +2,15 @@ package com.sensedia.demo.it.http;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.sensedia.commons.errors.domains.DefaultErrorResponse;
-import com.sensedia.demo.adapters.dtos.UserCreationDto;
 import com.sensedia.demo.adapters.dtos.UserDeletionDto;
-import com.sensedia.demo.adapters.dtos.UserResponseDto;
+import com.sensedia.demo.adapters.dtos.UserDto;
 import com.sensedia.demo.commons.BrokerResponse;
 import com.sensedia.demo.domains.User;
 import com.sensedia.demo.domains.UserStatus;
 import org.junit.jupiter.api.*;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
 
@@ -53,7 +49,7 @@ public class AmqpUserDeletionTest extends AbstractUserTest {
     // NOTIFICATION VALIDATION
     BrokerResponse brokerResponse = collector.forChannel(brokerOutput.publishUserDeleted());
 
-    UserResponseDto userResponse = brokerResponse.getPayload(UserResponseDto.class);
+    UserDto userResponse = brokerResponse.getPayload(UserDto.class);
 
     assertThat(isUUID(userResponse.getId())).isTrue();
     assertThat(userResponse.getEmail()).isEqualTo("usuario03@sensedia.com");
@@ -70,9 +66,9 @@ public class AmqpUserDeletionTest extends AbstractUserTest {
     UserDeletionDto userDeletionDto = new UserDeletionDto(USER_ID_NOT_FOUND);
 
     Message<UserDeletionDto> message =
-            MessageBuilder.withPayload(userDeletionDto)
-                    .setHeader(APP_ID_HEADER_NAME, "app-test")
-                    .build();
+        MessageBuilder.withPayload(userDeletionDto)
+            .setHeader(APP_ID_HEADER_NAME, "app-test")
+            .build();
 
     brokerInput.subscribeUserDeletionRequested().send(message);
 
@@ -80,9 +76,9 @@ public class AmqpUserDeletionTest extends AbstractUserTest {
     BrokerResponse brokerResponse = collector.forChannel(brokerOutput.publishUserOperationError());
 
     DefaultErrorResponse<UserDeletionDto> response =
-            brokerResponse.getPayload(new TypeReference<DefaultErrorResponse<UserDeletionDto>>() {});
+        brokerResponse.getPayload(new TypeReference<>() {});
 
-    assertThat((UserDeletionDto) response.getOriginalMessage()).isEqualTo(userDeletionDto);
+    assertThat(response.getOriginalMessage()).isEqualTo(userDeletionDto);
     assertThat(response.getHttpStatus()).isEqualTo(HttpStatus.NOT_FOUND);
     assertThat(response.getStatus()).isEqualTo(HttpStatus.NOT_FOUND.value());
     assertThat(response.getTitle()).isEqualTo(HttpStatus.NOT_FOUND.getReasonPhrase());

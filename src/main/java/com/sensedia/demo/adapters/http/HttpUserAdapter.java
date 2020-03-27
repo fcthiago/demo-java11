@@ -2,7 +2,7 @@ package com.sensedia.demo.adapters.http;
 
 import com.sensedia.commons.converters.InstantConverter;
 import com.sensedia.demo.adapters.dtos.UserCreationDto;
-import com.sensedia.demo.adapters.dtos.UserResponseDto;
+import com.sensedia.demo.adapters.dtos.UserDto;
 import com.sensedia.demo.adapters.dtos.UserUpdateDto;
 import com.sensedia.demo.adapters.mappers.UserMapper;
 import com.sensedia.demo.domains.User;
@@ -39,12 +39,12 @@ public class HttpUserAdapter {
   }
 
   @PostMapping
-  public ResponseEntity<UserResponseDto> create(@RequestBody UserCreationDto userCreation) {
+  public ResponseEntity<UserDto> create(@RequestBody UserCreationDto userCreation) {
     User user = userApplication.create(userMapper.toUser(userCreation));
 
-    UserResponseDto userResponseDto = userMapper.toUserResponseDto(user);
+    UserDto userDto = userMapper.toUserDto(user);
 
-    return ResponseEntity.status(HttpStatus.CREATED).body(userResponseDto);
+    return ResponseEntity.status(HttpStatus.CREATED).body(userDto);
   }
 
   @DeleteMapping("/{id}")
@@ -54,26 +54,26 @@ public class HttpUserAdapter {
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<UserResponseDto> update(
+  public ResponseEntity<UserDto> update(
       @PathVariable String id, @Valid @RequestBody UserUpdateDto userUpdateDto) {
     User user = userApplication.update(userMapper.toUser(userUpdateDto), id);
 
-    UserResponseDto userResponseDto = userMapper.toUserResponseDto(user);
+    UserDto userDto = userMapper.toUserDto(user);
 
-    return ResponseEntity.ok(userResponseDto);
+    return ResponseEntity.ok(userDto);
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<UserResponseDto> get(@PathVariable String id) {
+  public ResponseEntity<UserDto> get(@PathVariable String id) {
     User user = userApplication.findById(id);
 
-    UserResponseDto userResponse = userMapper.toUserResponseDto(user);
+    UserDto userResponse = userMapper.toUserDto(user);
 
     return ResponseEntity.ok(userResponse);
   }
 
   @GetMapping
-  public ResponseEntity<List<UserResponseDto>> getAll(
+  public ResponseEntity<List<UserDto>> getAll(
       @RequestParam(value = "status", required = false) final String status,
       @RequestParam(value = "name", required = false) final String name,
       @RequestParam(value = "email", required = false) final String email,
@@ -99,7 +99,7 @@ public class HttpUserAdapter {
 
     UserSearchResponse userSearchResponse = userApplication.findAll(userSearch);
 
-    List<UserResponseDto> response = userMapper.toUserResponseDtos(userSearchResponse.getUsers());
+    List<UserDto> response = userMapper.toUserDtos(userSearchResponse.getUsers());
 
     return ResponseEntity.ok()
         .header(HEADER_CONTENT_RANGE, valueOf(userSearchResponse.getTotal()))

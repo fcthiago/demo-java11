@@ -53,7 +53,7 @@ public class AmqpUserAdapterOutbound implements AmqpPort {
   }
 
   private void sendMessage(MessageChannel channel, User user, String eventName) {
-    sendMessage(channel, userMapper.toUserResponseDto(user), eventName);
+    sendMessage(channel, userMapper.toUserDto(user), eventName);
   }
 
   private void sendMessage(MessageChannel channel, Object object, String eventName) {

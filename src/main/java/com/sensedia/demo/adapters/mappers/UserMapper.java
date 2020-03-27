@@ -1,7 +1,7 @@
 package com.sensedia.demo.adapters.mappers;
 
 import com.sensedia.demo.adapters.dtos.UserCreationDto;
-import com.sensedia.demo.adapters.dtos.UserResponseDto;
+import com.sensedia.demo.adapters.dtos.UserDto;
 import com.sensedia.demo.adapters.dtos.UserUpdateDto;
 import com.sensedia.demo.domains.User;
 import org.mapstruct.DecoratedWith;
@@ -16,7 +16,7 @@ public interface UserMapper {
 
   User toUser(UserUpdateDto userUpdateDto);
 
-  UserResponseDto toUserResponseDto(User user);
+  UserDto toUserDto(User user);
 
-  List<UserResponseDto> toUserResponseDtos(List<User> users);
+  List<UserDto> toUserDtos(List<User> users);
 }

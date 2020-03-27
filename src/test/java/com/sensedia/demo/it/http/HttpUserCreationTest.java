@@ -2,10 +2,10 @@ package com.sensedia.demo.it.http;
 
 import com.sensedia.commons.errors.domains.DefaultErrorResponse;
 import com.sensedia.demo.adapters.dtos.UserCreationDto;
-import com.sensedia.demo.adapters.dtos.UserResponseDto;
+import com.sensedia.demo.adapters.dtos.UserDto;
+import com.sensedia.demo.commons.BrokerResponse;
 import com.sensedia.demo.domains.User;
 import com.sensedia.demo.domains.UserStatus;
-import com.sensedia.demo.commons.BrokerResponse;
 import org.junit.jupiter.api.*;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -35,14 +35,13 @@ public class HttpUserCreationTest extends AbstractUserTest {
     userCreation.setEmail("thiago.costa@sensedia.com");
     userCreation.setName("Thiago Costa");
 
-    ResponseEntity<UserResponseDto> response =
-        request.exchange(
-            "/users", HttpMethod.POST, new HttpEntity<>(userCreation), UserResponseDto.class);
+    ResponseEntity<UserDto> response =
+        request.exchange("/users", HttpMethod.POST, new HttpEntity<>(userCreation), UserDto.class);
 
     // RESPONSE VALIDATION
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
-    UserResponseDto userResponse = response.getBody();
+    UserDto userResponse = response.getBody();
 
     assertThat(isUUID(userResponse.getId())).isTrue();
     assertThat(userResponse.getEmail()).isEqualTo("thiago.costa@sensedia.com");
@@ -62,7 +61,7 @@ public class HttpUserCreationTest extends AbstractUserTest {
     // NOTIFICATION VALIDATION
     BrokerResponse brokerResponse = collector.forChannel(brokerOutput.publishUserCreated());
 
-    userResponse = brokerResponse.getPayload(UserResponseDto.class);
+    userResponse = brokerResponse.getPayload(UserDto.class);
 
     assertThat(isUUID(userResponse.getId())).isTrue();
     assertThat(userResponse.getEmail()).isEqualTo("thiago.costa@sensedia.com");
@@ -75,7 +74,7 @@ public class HttpUserCreationTest extends AbstractUserTest {
 
   @Test
   @DisplayName("I want to create a user without email")
-  public void createUserWithoutEmail() throws IOException {
+  public void createUserWithoutEmail() {
     UserCreationDto userCreation = new UserCreationDto();
     userCreation.setName("Thiago Costa");
 
@@ -97,7 +96,7 @@ public class HttpUserCreationTest extends AbstractUserTest {
 
   @Test
   @DisplayName("I want to create a user without name")
-  public void createUserWithoutName() throws IOException {
+  public void createUserWithoutName() {
     UserCreationDto userCreation = new UserCreationDto();
     userCreation.setEmail("thiago.costa@sensedia.com");
 

@@ -1,7 +1,7 @@
 package com.sensedia.demo.it.http;
 
 import com.sensedia.commons.errors.domains.DefaultErrorResponse;
-import com.sensedia.demo.adapters.dtos.UserResponseDto;
+import com.sensedia.demo.adapters.dtos.UserDto;
 import com.sensedia.demo.adapters.dtos.UserUpdateDto;
 import com.sensedia.demo.commons.BrokerResponse;
 import com.sensedia.demo.domains.User;
@@ -38,25 +38,24 @@ public class HttpUserUpdateTest extends AbstractUserTest {
     userUpdateDto.setName("Thiago Costa");
     userUpdateDto.setStatus(UserStatus.DISABLE.name());
 
-    ResponseEntity<UserResponseDto> response =
+    ResponseEntity<UserDto> response =
         request.exchange(
             "/users/{id}",
             HttpMethod.PUT,
             new HttpEntity<>(userUpdateDto),
-            UserResponseDto.class,
+            UserDto.class,
             USER_ID_VALID);
 
     // RESPONSE VALIDATION
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-    UserResponseDto userResponse = response.getBody();
+    UserDto userResponse = response.getBody();
 
     assertThat(userResponse.getId()).isEqualTo(USER_ID_VALID);
     assertThat(userResponse.getEmail()).isEqualTo("thiago.costa@sensedia.com");
     assertThat(userResponse.getName()).isEqualTo("Thiago Costa");
     assertThat(userResponse.getStatus()).isEqualTo(UserStatus.DISABLE.toString());
-    assertThat(userResponse.getCreationDate())
-        .isEqualTo(Instant.parse("2020-03-23T16:09:01.035Z"));
+    assertThat(userResponse.getCreationDate()).isEqualTo(Instant.parse("2020-03-23T16:09:01.035Z"));
 
     // DATABASE VALIDATION
     User user = repository.findById(USER_ID_VALID).get();
@@ -70,21 +69,20 @@ public class HttpUserUpdateTest extends AbstractUserTest {
     // NOTIFICATION VALIDATION
     BrokerResponse brokerResponse = collector.forChannel(brokerOutput.publishUserUpdated());
 
-    userResponse = brokerResponse.getPayload(UserResponseDto.class);
+    userResponse = brokerResponse.getPayload(UserDto.class);
 
     assertThat(userResponse.getId()).isEqualTo(USER_ID_VALID);
     assertThat(userResponse.getEmail()).isEqualTo("thiago.costa@sensedia.com");
     assertThat(userResponse.getName()).isEqualTo("Thiago Costa");
     assertThat(userResponse.getStatus()).isEqualTo(UserStatus.DISABLE.toString());
-    assertThat(userResponse.getCreationDate())
-        .isEqualTo(Instant.parse("2020-03-23T16:09:01.035Z"));
+    assertThat(userResponse.getCreationDate()).isEqualTo(Instant.parse("2020-03-23T16:09:01.035Z"));
 
     assertThat(brokerResponse.getHeaders().get("event_name")).isEqualTo("UserUpdate");
   }
 
   @Test
   @DisplayName("I want to update a user without email")
-  public void updateUserWithoutEmail() throws IOException {
+  public void updateUserWithoutEmail() {
     UserUpdateDto userUpdateDto = new UserUpdateDto();
 
     userUpdateDto.setName("Thiago Costa");
@@ -112,7 +110,7 @@ public class HttpUserUpdateTest extends AbstractUserTest {
 
   @Test
   @DisplayName("I want to update a user without name")
-  public void updateUserWithoutName() throws IOException {
+  public void updateUserWithoutName() {
     UserUpdateDto userUpdateDto = new UserUpdateDto();
 
     userUpdateDto.setEmail("thiago.costa@sensedia.com");
@@ -140,7 +138,7 @@ public class HttpUserUpdateTest extends AbstractUserTest {
 
   @Test
   @DisplayName("I want to update a user without status")
-  public void updateUserWithoutStatus() throws IOException {
+  public void updateUserWithoutStatus() {
     UserUpdateDto userUpdateDto = new UserUpdateDto();
 
     userUpdateDto.setName("Thiago Costa");
@@ -168,7 +166,7 @@ public class HttpUserUpdateTest extends AbstractUserTest {
 
   @Test
   @DisplayName("I want to update a user with invalid status")
-  public void updateUserWithInvalidStatus() throws IOException {
+  public void updateUserWithInvalidStatus() {
     UserUpdateDto userUpdateDto = new UserUpdateDto();
 
     userUpdateDto.setName("Thiago Costa");
@@ -197,7 +195,7 @@ public class HttpUserUpdateTest extends AbstractUserTest {
 
   @Test
   @DisplayName("I want to update a user with invalid email")
-  public void updateUserWithInvalidEmail() throws IOException {
+  public void updateUserWithInvalidEmail() {
     UserUpdateDto userUpdateDto = new UserUpdateDto();
 
     userUpdateDto.setName("Thiago Costa");
@@ -223,10 +221,9 @@ public class HttpUserUpdateTest extends AbstractUserTest {
     assertThat(collector.forChannel(brokerOutput.publishUserUpdated())).isNull();
   }
 
-
   @Test
   @DisplayName("I want to update a user that does not exist")
-  public void updateUserThatDoesNotExist() throws IOException {
+  public void updateUserThatDoesNotExist() {
     UserUpdateDto userUpdateDto = new UserUpdateDto();
 
     userUpdateDto.setName("Thiago Costa");
@@ -234,12 +231,12 @@ public class HttpUserUpdateTest extends AbstractUserTest {
     userUpdateDto.setStatus(UserStatus.DISABLE.name());
 
     ResponseEntity<DefaultErrorResponse> response =
-            request.exchange(
-                    "/users/{id}",
-                    HttpMethod.PUT,
-                    new HttpEntity<>(userUpdateDto),
-                    DefaultErrorResponse.class,
-                    USER_ID_NOT_FOUND);
+        request.exchange(
+            "/users/{id}",
+            HttpMethod.PUT,
+            new HttpEntity<>(userUpdateDto),
+            DefaultErrorResponse.class,
+            USER_ID_NOT_FOUND);
 
     // RESPONSE VALIDATION
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);

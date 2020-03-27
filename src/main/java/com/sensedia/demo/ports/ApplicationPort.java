@@ -12,7 +12,7 @@ public interface ApplicationPort {
 
   void delete(@NotNull String id);
 
-  User update(@Valid @NotNull User user, String id);
+  User update(@Valid @NotNull User user, @NotNull String id);
 
   User findById(@NotNull String id);
 
