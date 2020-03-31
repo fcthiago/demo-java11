@@ -7,7 +7,7 @@ public enum Sort {
   NAME("name"),
   EMAIL("email"),
   STATUS("status"),
-  CREATION_DATE("creationDate");
+  CREATED_AT("createdAt");
 
   private String fieldName;
 
@@ -25,7 +25,7 @@ public enum Sort {
     }
 
     throw new BadRequestException(
-        "Invalid sort [" + value + "], accepted values: [name, email, status, creation_date]");
+        "Invalid sort [" + value + "], accepted values: [name, email, status, created_at]");
   }
 
   public String getFieldName() {

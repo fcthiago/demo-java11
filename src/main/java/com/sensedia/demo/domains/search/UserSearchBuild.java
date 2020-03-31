@@ -39,13 +39,13 @@ public class UserSearchBuild {
       return this;
     }
 
-    public Builder createDateStart(Instant createDateStart) {
-      userSearch.setCreateDateStart(createDateStart);
+    public Builder createdAtStart(Instant createDateStart) {
+      userSearch.setCreatedAtStart(createDateStart);
       return this;
     }
 
-    public Builder createDateEnd(Instant createDateEnd) {
-      userSearch.setCreateDateEnd(createDateEnd);
+    public Builder createdAtEnd(Instant createDateEnd) {
+      userSearch.setCreatedAtEnd(createDateEnd);
       return this;
     }
 

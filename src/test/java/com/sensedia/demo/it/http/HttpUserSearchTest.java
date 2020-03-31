@@ -34,10 +34,7 @@ public class HttpUserSearchTest extends AbstractUserTest {
   public void searchUserWithEmptyResultList() {
     ResponseEntity<UserDto[]> response =
         request.exchange(
-            "/users?page=1&limit=3&name=asdf",
-            HttpMethod.GET,
-            HttpEntity.EMPTY,
-            UserDto[].class);
+            "/users?page=1&limit=3&name=asdf", HttpMethod.GET, HttpEntity.EMPTY, UserDto[].class);
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
@@ -67,8 +64,8 @@ public class HttpUserSearchTest extends AbstractUserTest {
     assertThat(userDto.getName()).isEqualTo("Usuário 01");
     assertThat(userDto.getEmail()).isEqualTo("usuario01@sensedia.com");
     assertThat(userDto.getStatus()).isEqualTo(UserStatus.ACTIVE.name());
-    assertThat(userDto.getCreationDate())
-        .isEqualTo(Instant.parse("2020-03-21T16:07:44.260Z"));
+    assertThat(userDto.getCreatedAt()).isEqualTo(Instant.parse("2020-03-21T16:07:44.260Z"));
+    assertThat(userDto.getUpdatedAt()).isEqualTo(Instant.parse("2020-03-22T16:07:44.260Z"));
 
     assertThat(response.getHeaders().get(HEADER_CONTENT_RANGE).get(0)).isEqualTo("1");
     assertThat(response.getHeaders().get(HEADER_ACCEPT_RANGE).get(0)).isEqualTo("100");
@@ -185,7 +182,7 @@ public class HttpUserSearchTest extends AbstractUserTest {
   public void searchUserByCreationDate() {
     ResponseEntity<UserDto[]> response =
         request.exchange(
-            "/users?page=1&limit=3&creation_date_start=2020-03-21&creation_date_end=2020-03-23",
+            "/users?page=1&limit=3&created_at_start=2020-03-21&created_at_end=2020-03-23",
             HttpMethod.GET,
             HttpEntity.EMPTY,
             UserDto[].class);
@@ -206,7 +203,7 @@ public class HttpUserSearchTest extends AbstractUserTest {
   public void searchUserByCreationDateWithInvalidDate() {
     ResponseEntity<DefaultErrorResponse> response =
         request.exchange(
-            "/users?page=1&limit=3&creation_date_start=2020-03-21&creation_date_end=2020",
+            "/users?page=1&limit=3&created_at_start=2020-03-21&created_at_end=2020",
             HttpMethod.GET,
             HttpEntity.EMPTY,
             DefaultErrorResponse.class);
@@ -226,10 +223,7 @@ public class HttpUserSearchTest extends AbstractUserTest {
   public void searchUserSortingByName() {
     ResponseEntity<UserDto[]> response =
         request.exchange(
-            "/users?page=1&limit=3&sort=name",
-            HttpMethod.GET,
-            HttpEntity.EMPTY,
-            UserDto[].class);
+            "/users?page=1&limit=3&sort=name", HttpMethod.GET, HttpEntity.EMPTY, UserDto[].class);
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
@@ -254,10 +248,7 @@ public class HttpUserSearchTest extends AbstractUserTest {
   public void searchUserSortingByEmail() {
     ResponseEntity<UserDto[]> response =
         request.exchange(
-            "/users?page=1&limit=3&sort=email",
-            HttpMethod.GET,
-            HttpEntity.EMPTY,
-            UserDto[].class);
+            "/users?page=1&limit=3&sort=email", HttpMethod.GET, HttpEntity.EMPTY, UserDto[].class);
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
@@ -278,10 +269,7 @@ public class HttpUserSearchTest extends AbstractUserTest {
   public void searchUserSortingByStatus() {
     ResponseEntity<UserDto[]> response =
         request.exchange(
-            "/users?page=1&limit=3&sort=status",
-            HttpMethod.GET,
-            HttpEntity.EMPTY,
-            UserDto[].class);
+            "/users?page=1&limit=3&sort=status", HttpMethod.GET, HttpEntity.EMPTY, UserDto[].class);
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
@@ -302,7 +290,7 @@ public class HttpUserSearchTest extends AbstractUserTest {
   public void searchUserSortingByCreationDate() {
     ResponseEntity<UserDto[]> response =
         request.exchange(
-            "/users?page=1&limit=3&sort=creation_date",
+            "/users?page=1&limit=3&sort=created_at",
             HttpMethod.GET,
             HttpEntity.EMPTY,
             UserDto[].class);
@@ -337,7 +325,7 @@ public class HttpUserSearchTest extends AbstractUserTest {
     assertThat(response.getBody().getStatus()).isEqualTo(BAD_REQUEST.value());
     assertThat(response.getBody().getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
     assertThat(response.getBody().getDetail())
-        .isEqualTo("Invalid sort [invalid], accepted values: [name, email, status, creation_date]");
+        .isEqualTo("Invalid sort [invalid], accepted values: [name, email, status, created_at]");
     assertThat(response.getBody().getType()).isNull();
   }
 

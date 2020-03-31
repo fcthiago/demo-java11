@@ -19,7 +19,9 @@ public class UserDto {
 
   private String status;
 
-  private Instant creationDate;
+  private Instant createdAt;
+
+  private Instant updatedAt;
 
   public String getId() {
     return id;
@@ -53,12 +55,20 @@ public class UserDto {
     this.status = status;
   }
 
-  public Instant getCreationDate() {
-    return creationDate;
+  public Instant getCreatedAt() {
+    return createdAt;
   }
 
-  public void setCreationDate(Instant creationDate) {
-    this.creationDate = creationDate;
+  public void setCreatedAt(Instant createdAt) {
+    this.createdAt = createdAt;
+  }
+
+  public Instant getUpdatedAt() {
+    return updatedAt;
+  }
+
+  public void setUpdatedAt(Instant updatedAt) {
+    this.updatedAt = updatedAt;
   }
 
   @Override
@@ -68,7 +78,8 @@ public class UserDto {
         .append("name", name)
         .append("email", email)
         .append("status", status)
-        .append("creationDate", creationDate)
+        .append("createdAt", createdAt)
+        .append("updatedAt", updatedAt)
         .toString();
   }
 }

@@ -67,12 +67,12 @@ public class AdvancedUserSearchImpl implements AdvancedUserSearch {
     if (userSearch.getStatus() != null)
       query.addCriteria(Criteria.where("status").is(userSearch.getStatus()));
 
-    if (userSearch.getCreateDateStart() != null || userSearch.getCreateDateEnd() != null) {
-      Criteria criteria = Criteria.where("creationDate");
+    if (userSearch.getCreatedAtStart() != null || userSearch.getCreatedAtEnd() != null) {
+      Criteria criteria = Criteria.where("createdAt");
 
-      if (userSearch.getCreateDateStart() != null) criteria.gte(userSearch.getCreateDateStart());
+      if (userSearch.getCreatedAtStart() != null) criteria.gte(userSearch.getCreatedAtStart());
 
-      if (userSearch.getCreateDateEnd() != null) criteria.lt(userSearch.getCreateDateEnd());
+      if (userSearch.getCreatedAtEnd() != null) criteria.lt(userSearch.getCreatedAtEnd());
 
       query.addCriteria(criteria);
     }

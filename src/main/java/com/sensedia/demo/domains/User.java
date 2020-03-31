@@ -23,7 +23,9 @@ public class User {
 
   private UserStatus status;
 
-  private Instant creationDate;
+  private Instant createdAt;
+
+  private Instant updatedAt;
 
   public String getId() {
     return id;
@@ -57,12 +59,20 @@ public class User {
     this.status = status;
   }
 
-  public Instant getCreationDate() {
-    return creationDate;
+  public Instant getCreatedAt() {
+    return createdAt;
   }
 
-  public void setCreationDate(Instant creationDate) {
-    this.creationDate = creationDate;
+  public void setCreatedAt(Instant createdAt) {
+    this.createdAt = createdAt;
+  }
+
+  public Instant getUpdatedAt() {
+    return updatedAt;
+  }
+
+  public void setUpdatedAt(Instant updatedAt) {
+    this.updatedAt = updatedAt;
   }
 
   @Override
@@ -73,13 +83,14 @@ public class User {
     return Objects.equals(id, user.id)
         && Objects.equals(name, user.name)
         && Objects.equals(email, user.email)
-        && Objects.equals(status, user.status)
-        && Objects.equals(creationDate, user.creationDate);
+        && status == user.status
+        && Objects.equals(createdAt, user.createdAt)
+        && Objects.equals(updatedAt, user.updatedAt);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, name, email, status, creationDate);
+    return Objects.hash(id, name, email, status, createdAt, updatedAt);
   }
 
   @Override
@@ -89,7 +100,8 @@ public class User {
         .append("name", name)
         .append("email", email)
         .append("status", status)
-        .append("creationDate", creationDate)
+        .append("createdAt", createdAt)
+        .append("updatedAt", updatedAt)
         .toString();
   }
 }

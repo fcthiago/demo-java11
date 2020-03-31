@@ -77,8 +77,8 @@ public class HttpUserAdapter {
       @RequestParam(value = "status", required = false) final String status,
       @RequestParam(value = "name", required = false) final String name,
       @RequestParam(value = "email", required = false) final String email,
-      @RequestParam(value = "creation_date_start", required = false) final String creationDateStart,
-      @RequestParam(value = "creation_date_end", required = false) final String creationDateEnd,
+      @RequestParam(value = "created_at_start", required = false) final String createdAtStart,
+      @RequestParam(value = "created_at_end", required = false) final String createdAtEnd,
       @RequestParam(value = "sort", required = false, defaultValue = "name") String sort,
       @RequestParam(value = "sort_type", required = false, defaultValue = "asc") String sortType,
       @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
@@ -89,8 +89,8 @@ public class HttpUserAdapter {
             .status(status)
             .name(name)
             .email(email)
-            .createDateStart(instantConverter.toInstant(creationDateStart))
-            .createDateEnd(instantConverter.toInstant(creationDateEnd))
+            .createdAtStart(instantConverter.toInstant(createdAtStart))
+            .createdAtEnd(instantConverter.toInstant(createdAtEnd))
             .sort(sort)
             .sortType(sortType)
             .page(page)

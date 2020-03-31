@@ -41,7 +41,8 @@ public class HttpUserGetTest extends AbstractUserTest {
     assertThat(userResponse.getEmail()).isEqualTo("usuario03@sensedia.com");
     assertThat(userResponse.getName()).isEqualTo("Usuário 03");
     assertThat(userResponse.getStatus()).isEqualTo(UserStatus.ACTIVE.toString());
-    assertThat(userResponse.getCreationDate()).isNotNull();
+    assertThat(userResponse.getCreatedAt()).isNotNull();
+    assertThat(userResponse.getUpdatedAt()).isNotNull();
   }
 
   @Test

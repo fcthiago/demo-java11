@@ -47,7 +47,8 @@ public class HttpUserCreationTest extends AbstractUserTest {
     assertThat(userResponse.getEmail()).isEqualTo("thiago.costa@sensedia.com");
     assertThat(userResponse.getName()).isEqualTo("Thiago Costa");
     assertThat(userResponse.getStatus()).isEqualTo(UserStatus.ACTIVE.toString());
-    assertThat(userResponse.getCreationDate()).isNotNull();
+    assertThat(userResponse.getCreatedAt()).isNotNull();
+    assertThat(userResponse.getUpdatedAt()).isNull();
 
     // DATABASE VALIDATION
     User user = repository.findAll().iterator().next();
@@ -56,7 +57,8 @@ public class HttpUserCreationTest extends AbstractUserTest {
     assertThat(user.getEmail()).isEqualTo("thiago.costa@sensedia.com");
     assertThat(user.getName()).isEqualTo("Thiago Costa");
     assertThat(user.getStatus()).isEqualTo(UserStatus.ACTIVE);
-    assertThat(user.getCreationDate()).isNotNull();
+    assertThat(user.getCreatedAt()).isNotNull();
+    assertThat(user.getUpdatedAt()).isNull();
 
     // NOTIFICATION VALIDATION
     BrokerResponse brokerResponse = collector.forChannel(brokerOutput.publishUserCreated());
@@ -67,7 +69,8 @@ public class HttpUserCreationTest extends AbstractUserTest {
     assertThat(userResponse.getEmail()).isEqualTo("thiago.costa@sensedia.com");
     assertThat(userResponse.getName()).isEqualTo("Thiago Costa");
     assertThat(userResponse.getStatus()).isEqualTo(UserStatus.ACTIVE.toString());
-    assertThat(userResponse.getCreationDate()).isNotNull();
+    assertThat(userResponse.getCreatedAt()).isNotNull();
+    assertThat(userResponse.getUpdatedAt()).isNull();
 
     assertThat(brokerResponse.getHeaders().get("event_name")).isEqualTo("UserCreation");
   }

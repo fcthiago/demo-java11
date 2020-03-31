@@ -33,7 +33,7 @@ public class UserApplication implements ApplicationPort {
 
   @Override
   public User create(@Valid @NotNull User user) {
-    user.setCreationDate(Instant.now());
+    user.setCreatedAt(Instant.now());
     user.setStatus(UserStatus.ACTIVE);
 
     repository.save(user);
@@ -58,6 +58,8 @@ public class UserApplication implements ApplicationPort {
     user.setEmail(userForUpdate.getEmail());
 
     if (userForUpdate.getStatus() != null) user.setStatus(userForUpdate.getStatus());
+
+    user.setUpdatedAt(Instant.now());
 
     repository.save(user);
     amqpPort.notifyUserUpdate(user);

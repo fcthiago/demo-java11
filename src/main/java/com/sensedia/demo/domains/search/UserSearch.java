@@ -22,8 +22,8 @@ public class UserSearch {
   @Min(1)
   private Integer limit;
 
-  private Instant createDateStart;
-  private Instant createDateEnd;
+  private Instant createdAtStart;
+  private Instant createdAtEnd;
 
   private Sort sort;
   private SortType sortType;
@@ -68,20 +68,20 @@ public class UserSearch {
     this.limit = limit;
   }
 
-  public Instant getCreateDateStart() {
-    return createDateStart;
+  public Instant getCreatedAtStart() {
+    return createdAtStart;
   }
 
-  void setCreateDateStart(Instant createDateStart) {
-    this.createDateStart = createDateStart;
+  void setCreatedAtStart(Instant createdAtStart) {
+    this.createdAtStart = createdAtStart;
   }
 
-  public Instant getCreateDateEnd() {
-    return createDateEnd;
+  public Instant getCreatedAtEnd() {
+    return createdAtEnd;
   }
 
-  void setCreateDateEnd(Instant createDateEnd) {
-    this.createDateEnd = createDateEnd;
+  void setCreatedAtEnd(Instant createdAtEnd) {
+    this.createdAtEnd = createdAtEnd;
   }
 
   public Sort getSort() {
@@ -108,8 +108,8 @@ public class UserSearch {
         .append("status", status)
         .append("page", page)
         .append("limit", limit)
-        .append("createDateStart", createDateStart)
-        .append("createDateEnd", createDateEnd)
+        .append("createDateStart", createdAtStart)
+        .append("createDateEnd", createdAtEnd)
         .append("sort", sort)
         .append("sortType", sortType)
         .toString();

@@ -55,7 +55,8 @@ public class HttpUserUpdateTest extends AbstractUserTest {
     assertThat(userResponse.getEmail()).isEqualTo("thiago.costa@sensedia.com");
     assertThat(userResponse.getName()).isEqualTo("Thiago Costa");
     assertThat(userResponse.getStatus()).isEqualTo(UserStatus.DISABLE.toString());
-    assertThat(userResponse.getCreationDate()).isEqualTo(Instant.parse("2020-03-23T16:09:01.035Z"));
+    assertThat(userResponse.getCreatedAt()).isEqualTo(Instant.parse("2020-03-23T16:09:01.035Z"));
+    assertThat(userResponse.getUpdatedAt()).isNotNull();
 
     // DATABASE VALIDATION
     User user = repository.findById(USER_ID_VALID).get();
@@ -64,7 +65,8 @@ public class HttpUserUpdateTest extends AbstractUserTest {
     assertThat(user.getEmail()).isEqualTo("thiago.costa@sensedia.com");
     assertThat(user.getName()).isEqualTo("Thiago Costa");
     assertThat(user.getStatus()).isEqualTo(UserStatus.DISABLE);
-    assertThat(user.getCreationDate()).isEqualTo(Instant.parse("2020-03-23T16:09:01.035Z"));
+    assertThat(user.getCreatedAt()).isEqualTo(Instant.parse("2020-03-23T16:09:01.035Z"));
+    assertThat(user.getUpdatedAt()).isNotNull();
 
     // NOTIFICATION VALIDATION
     BrokerResponse brokerResponse = collector.forChannel(brokerOutput.publishUserUpdated());
@@ -75,7 +77,8 @@ public class HttpUserUpdateTest extends AbstractUserTest {
     assertThat(userResponse.getEmail()).isEqualTo("thiago.costa@sensedia.com");
     assertThat(userResponse.getName()).isEqualTo("Thiago Costa");
     assertThat(userResponse.getStatus()).isEqualTo(UserStatus.DISABLE.toString());
-    assertThat(userResponse.getCreationDate()).isEqualTo(Instant.parse("2020-03-23T16:09:01.035Z"));
+    assertThat(userResponse.getCreatedAt()).isEqualTo(Instant.parse("2020-03-23T16:09:01.035Z"));
+    assertThat(userResponse.getUpdatedAt()).isNotNull();
 
     assertThat(brokerResponse.getHeaders().get("event_name")).isEqualTo("UserUpdate");
   }
