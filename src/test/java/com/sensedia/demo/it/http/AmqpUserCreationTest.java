@@ -162,7 +162,7 @@ public class AmqpUserCreationTest extends AbstractUserTest {
     assertThat(response.getOriginalMessage()).isEqualTo(userCreation);
     assertThat(response.getStatus()).isEqualTo(BAD_REQUEST.value());
     assertThat(response.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
-    assertThat(response.getDetail()).isEqualTo("email não é um endereço de e-mail");
+    assertThat(response.getDetail()).isEqualTo("email deve ser um endereço de e-mail bem formado");
     assertThat(response.getType()).isNull();
 
     MessageHeaders headers = brokerResponse.getHeaders();

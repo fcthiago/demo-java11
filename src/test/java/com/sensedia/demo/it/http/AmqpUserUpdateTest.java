@@ -292,7 +292,7 @@ public class AmqpUserUpdateTest extends AbstractUserTest {
     assertThat(response.getOriginalMessage()).isEqualTo(userUpdateDto);
     assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     assertThat(response.getTitle()).isEqualTo(HttpStatus.BAD_REQUEST.getReasonPhrase());
-    assertThat(response.getDetail()).isEqualTo("email não é um endereço de e-mail");
+    assertThat(response.getDetail()).isEqualTo("email deve ser um endereço de e-mail bem formado");
     assertThat(response.getType()).isNull();
 
     MessageHeaders headers = brokerResponse.getHeaders();

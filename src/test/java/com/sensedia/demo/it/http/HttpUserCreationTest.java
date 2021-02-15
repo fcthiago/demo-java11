@@ -134,7 +134,7 @@ public class HttpUserCreationTest extends AbstractUserTest {
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     assertThat(response.getBody().getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     assertThat(response.getBody().getTitle()).isEqualTo(HttpStatus.BAD_REQUEST.getReasonPhrase());
-    assertThat(response.getBody().getDetail()).isEqualTo("email não é um endereço de e-mail");
+    assertThat(response.getBody().getDetail()).isEqualTo("email deve ser um endereço de e-mail bem formado");
     assertThat(response.getBody().getType()).isNull();
 
     assertThat(repository.findAll()).hasSize(0);
